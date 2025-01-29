@@ -1,10 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
 * {
     margin: 0px;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
 }
+
 .login {
     display: flex;
     width: 100%;
@@ -26,6 +28,7 @@
     align-items: center;
     box-shadow: -10px 2px 20px 0px rgba(0, 0, 0, 0.41);
 }
+
 .left {
     background-color: white;
     text-align: center;
@@ -80,6 +83,7 @@ form input[type="text"] {
     border-radius: 7px;
     border: 0.5px solid gray;
 }
+
 .qe button {
     padding: 10px 40px;
     border-radius: 20px;
@@ -87,6 +91,7 @@ form input[type="text"] {
     color: white;
     border: none
 }
+
 .qe {
     display: flex;
     justify-content: center;

@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+    margin: 0px;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+
+.contaoner {
+    display: flex;
+}
+
+.img {
+    max-width: 50%;
+    margin: 10px 0 0 10px;
+}
+
+.img img {
+    width: 100%;
+}
+
+.banner {
+    width: 100%;
+    margin: 30 px 10px 0 0;
+}
+
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    width: 40%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.p {
+    font-size: 20px;
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.BT {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-top: 50%;
+    width: 60%;
+}
+
+.BT p {
+    font-size: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.lot button {
+    padding: 10px 40px;
+    border-radius: 20px;
+    background-color: #DC303B;
+    color: white;
+    border: none;
+    margin-bottom: 15px;
+    margin-top: 20%;
+    margin-right: 40px;
+}
+.lot button:hover{
+    background-color: #97000a;
+}

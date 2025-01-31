@@ -47,6 +47,10 @@ app.get('/atvt',(req,res) => {
     res.render('profile');
 });
 
+app.get('/upload',(req,res) => {
+    res.render('post');
+});
+
 app.listen(port,() =>{
     console.log(`Server is runing>>> http://localhost:${port}/welcome`)
 });

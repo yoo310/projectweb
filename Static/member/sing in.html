@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sing up</title>
     <link rel="stylesheet" href="../css/sing in.css">
+    <script src="../javascript/singin.js"></script>
 </head>
 
 <body>
@@ -20,13 +21,13 @@
             <h2>Sing in</h2>
             <form action="/home">
                 <label for="Age">Email</label>
-                <input type="email" id="email" name="email" placeholder=" Enter email">
+                <input type="email" id="email" name="email" placeholder=" Enter email" required>
                 <label for="distance">Password</label>
-                <input type="password" id="password" name="password" placeholder=" password">
+                <input type="password" id="password" name="password" placeholder=" password" required>
                 <!-- <div class="tot"><input type="checkbox" name="option1" value="option1"><label>Remember me</label><br></div> -->
 
                 <div class="qe">
-                    <button type="submit">Sing in</button>
+                    <button type="submit" onclick="login()" >Sing in</button>
                 </div>
             </form>
         </div>

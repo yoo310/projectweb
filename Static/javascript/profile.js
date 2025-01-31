@@ -3,9 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let chatIcon = document.getElementById("chat");
     let chatPopup = document.getElementById("chat-pop-up");
     let chatPopup_user = document.getElementById("float-chat-user");
-    let postbutton = document.getElementById("postbutton");
-    let post_popup = document.getElementById("pop-up-post");
-    let postdisplay = document.getElementById("postdisplayed");
 
     function toggleChatPopup() {
         if (chatPopup.style.display === "flex") {
@@ -14,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
             chatPopup.style.display = "flex";
         }
     }
-
 
     if (chatButton) {
         chatButton.addEventListener("click", function (event) {
@@ -34,17 +30,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
     document.addEventListener("click", function (event) {
         if (!chatButton.contains(event.target) && !chatPopup.contains(event.target) && !chatIcon.contains(event.target)) {
             chatPopup.style.display = "none";
         }
-    });
-
-
-    postbutton.addEventListener("click", function (event) {
-        event.stopPropagation();
-        post_popup.style.display = "flex";
     });
 
     document.addEventListener("click", function (event) {
@@ -55,10 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.ChatOpen = function () {
         chatPopup_user.style.display = "flex";
-    };
-
-    window.close_pop_up = function () {
-        post_popup.style.display = "none";
     };
 
     window.closechat = function () {

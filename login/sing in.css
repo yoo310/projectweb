@@ -74,7 +74,7 @@ form label {
     display: block;
 }
 
-form input[type="text"] {
+form input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -84,12 +84,25 @@ form input[type="text"] {
     border: 0.5px solid gray;
 }
 
+.tot {
+    justify-content: flex-start;
+    display: flex;
+    align-items: baseline;
+}
+
 .qe button {
     padding: 10px 40px;
     border-radius: 20px;
     background-color: #DC303B;
     color: white;
     border: none
+}
+
+.tot input {
+    width: auto;
+    height: auto;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 .qe {

@@ -23,8 +23,14 @@ app.get('/home',(req,res) => {
     res.render('home')
 })
 
+app.get('/sing-up1',(req,res) => {
+    res.render('sing up1')
+})
 
+app.get('/sing-up2',(req,res) => {
+    res.render('sing up2')
+})
 
 app.listen(port,() =>{
-    console.log(`Server is runing>>> http://localhost:${port}/login`)
+    console.log(`Server is runing>>> http://localhost:${port}/sing-up1`)
 })

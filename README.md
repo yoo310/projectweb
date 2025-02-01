@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 1. เปิด Terminal 
 2. npm init -y 
 3. npm install node express ejs
@@ -6,3 +7,6 @@
 
 นายสหรัฐ ฉายยา 66022208
 นางสาว ชนาภา ติใหม่ 66021331 
+=======
+ทดสอบการเมิจ
+>>>>>>> e9ed7c066eda375605f53392ca56ec8eadfa6007

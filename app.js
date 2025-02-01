@@ -33,6 +33,8 @@ app.get('/singin',(req,res) =>{
     res.render('sing_in')
 });
 
+// /asdasdsad
+
 
 app.listen(port,() =>{
     console.log(`Server is runing>>> http://localhost:${port}/welcome`)

@@ -18,17 +18,21 @@
 
         <div class="right">
             <h2>Sign up</h2>
-            <form action="/sing-up2">
+            <form action="/register/sing-up1" method="post">
                 <label for="email">Email</label>
-                <input fype="email" id="email" placeholder="Enter Email">
+                <input fype="email" name="email" id="email" placeholder="Enter Email" required>
+
                 <label for="username">User name</label>
-                <input fype="text" id="username" placeholder="User name">
+                <input fype="text" name="username" id="username" placeholder="User name" required>
+                
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Password">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                
                 <div class="gg">
                 <button type="submit">Next</button>
                 </div>
             </form>
+            <%=locals?.msg?msg:""%>
 
         </div>
     </div>

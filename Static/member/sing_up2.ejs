@@ -19,29 +19,30 @@
         <div class="right">
             <h2>Sing up</h2>
 
-            <form action="/sing-in">
+            <form action="/register/sing-up2" method="post">
                 <label>Gender</label><br>
                 <div class="box" id="yy">
                     <label>
-                        <input type="checkbox" name="option1" value="option1">Men
+                        <input type="checkbox" name="option" value="Men">Men
                     </label><br>
 
                     <label>
-                        <input type="checkbox" name="option2" value="option2">Female
+                        <input type="checkbox" name="option" value="Female">Female
                     </label><br>
 
                     <label>
-                        <input type="checkbox" name="option3" value="option3">Not specified
+                        <input type="checkbox" name="option" value="Not specified">Not specified
                     </label><br>
                 </div><br>
                 <label for="Age">Age</label>
-                <input type="text" id="age" name="Age" placeholder=" 18-99+">
+                <input type="text" id="age" name="age" placeholder=" 18-99+">
                 <label for="distance">Distance</label>
                 <input type="text" id="distance" name="distance" placeholder=" 18-99 km.">
 
                 <div class="gg">
                     <button type="submit">Next</button>
                 </div>
+                <%=locals?.msg?msg:""%>
             </form>
         </div>
     </div>

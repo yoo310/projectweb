@@ -4,7 +4,7 @@ const path = require('path');// ใช้จัดการ path ของไฟ
 
 
 const app = express(); //ตัวแปรที่ใช้กำหนดการตั้งค่าต่าง ๆ และจัดการเส้นทางของเซิร์ฟเวอร์.
-const port = 3000; //ระบุพอร์ตที่เซิร์ฟเวอร์จะรัน
+const port = 5000; //ระบุพอร์ตที่เซิร์ฟเวอร์จะรัน
 
 app.set('views',`${__dirname}/Static/member`); // กำหนดตำแหน่งโฟลเดอร์ที่เก็บไฟล์ Views (template) เป็นโฟลเดอร์ static
 app.set('view engine','ejs'); // ตั้งค่าให้ใช้ EJS เป็น template engine

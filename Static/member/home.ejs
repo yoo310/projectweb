@@ -66,7 +66,7 @@
 
     <div id="pop-up-post" class="post-popup">
         <div id="postdisplayed" class="pop-up">
-            <form id="usrp" class="user_post_form">
+            <form id="usrp" class="user_post_form" action="/user/create_post" method="post" enctype="multipart/form-data">
                 <div class="user_profile_">
                     <div class="left">
                         <img id="profile" src="../IMG/Untitled.png" alt="">
@@ -79,13 +79,15 @@
 
                 </div>
                 <div class="post_">
-                    <textarea name="" id="" placeholder="Create your event"></textarea>
+                    <textarea name="caption" id="" placeholder="Create your event"></textarea>
                 </div>
                 <div class="add_more">
                     <div class="icons">
-                        <a href="/upload"><i class='bx bxs-photo-album'></i></a>
-                        <a href=""><i class='bx bxs-location-plus'></i></a>
-                        <a href=""><i class='bx bxs-file-gif'></i></a>
+                        <label for="image"><i class='bx bxs-photo-album'></i></label>
+                        <input type="file" id="image" name="image" accept="image/*">
+                        <!-- <a href=""><i class='bx bxs-photo-album'></i></a> -->
+                        <!-- <a href=""><i class='bx bxs-location-plus'></i></a>
+                        <a href=""><i class='bx bxs-file-gif'></i></a> -->
                     </div>
                     <div class="post">
                         <button type="submit" onclick="close_pop_up()">Post</button>

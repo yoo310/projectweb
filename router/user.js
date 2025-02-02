@@ -90,4 +90,23 @@ router.post("/create_post",upload.single("image"), (req, res) => {
     
 });
 
+
+router.get('/', (req, res) => {
+    const sql = "SELECT img, capion, memberName FROM post";
+
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error retrieving posts:", err);
+            return res.status(500).send("Database error");
+        }
+
+        console.log("Posts from database:", results); // ตรวจสอบผลลัพธ์จากฐานข้อมูลใน Console
+
+        // ส่งตัวแปร posts ไปยัง home.ejs
+        res.render('member/home', { posts: results });
+    });
+});
+
+
+
 module.exports = router;

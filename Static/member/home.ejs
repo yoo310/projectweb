@@ -79,7 +79,7 @@
 
                 </div>
                 <div class="post_">
-                    <textarea name="caption" id="" placeholder="Create your event"></textarea>
+                    <textarea name="capion" id="" placeholder="Create your event"></textarea>
                 </div>
                 <div class="add_more">
                     <div class="icons">
@@ -135,29 +135,26 @@
                 </div>
 
             </div>
-            <div class="user_post">
-                <div class="posts">
-                    <div class="pros">
-                        <img src="../IMG/Untitled.png">
-                        <p>Somchai_UP</p>
-                    </div>
-                    <div>
-                        <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
-                    </div>
-                </div>
-                <div class="title">
-                    <p>หาเพื่อนตีแบตค่ะ😥 #แบดมินตัน เวลานัด 17.00</p>
-                </div>
-                <div class="badmi">
-                    <img src="../IMG/badminton.webp">
-                </div>
-                <div class="icon">
-                    <a href=""><i class='bx bxs-heart'></i>Interested</a>
-                    <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
-                    <a href=""><i class='bx bx-group'></i>Join</a>
-                    <a href=""><i class='bx bxs-share'></i>Share</a>
-                </div>
+            <div class="all-post">
+                <h2>Debug: จำนวนโพสต์ที่ได้รับ = <%= typeof posts !== 'undefined' ? posts.length : 0 %></h2> <!-- Debug -->
+            
+                <% if (posts && posts.length > 0) { %>
+                    <% posts.forEach(function(post) { %>
+                        <div class="post">
+                            <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
+                            <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
+                            
+                            <% if (post.img) { %>
+                                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                            <% } %>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>⚠️ ไม่มีโพสต์</p>
+                <% } %>
             </div>
+            
+
             <div class="user_post">
                 <div class="posts">
                     <div class="pros">
@@ -203,6 +200,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 

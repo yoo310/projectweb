@@ -4,21 +4,21 @@ const path = require('path');// ใช้จัดการ path ของไฟ
 
 
 const app = express(); //ตัวแปรที่ใช้กำหนดการตั้งค่าต่าง ๆ และจัดการเส้นทางของเซิร์ฟเวอร์.
-const port = 5000; //ระบุพอร์ตที่เซิร์ฟเวอร์จะรัน
+const port = 3000; //ระบุพอร์ตที่เซิร์ฟเวอร์จะรัน
 
 app.set('views',`${__dirname}/Static/member`); // กำหนดตำแหน่งโฟลเดอร์ที่เก็บไฟล์ Views (template) เป็นโฟลเดอร์ static
 app.set('view engine','ejs'); // ตั้งค่าให้ใช้ EJS เป็น template engine
 
-
-
 // กำหนดให้โฟลเดอร์ static เป็นโฟลเดอร์สำหรับเสิร์ฟไฟล์ Static เช่น CSS, JavaScript, และรูปภาพ.
-let root_path = path.resolve(__dirname,'Static');
+let root_path = path.join(__dirname,'Static');
 app.use(express.static(root_path));
+
 
 const userRouter = require('./router/user')
 const registerRouter = require('./router/register')
 app.use('/register',registerRouter);
 app.use('/user',userRouter);
+app.use('/',userRouter);
 
 app.get('/welcome', (req, res) => {
     res.render('welcome')

@@ -47,11 +47,48 @@ router.post('/verify',(req,res) => {
         }
         
         req.session.username = username
-        res.render('home', { username });
+        // res.render('home', { username });
+        res.redirect('/home');
         
     });
 
 });
+
+router.get('/home', (req, res) => {
+    username = req.session.username;
+
+    console.log("req.session.username : ",username); // Debug
+    console.log("✅ GET /home route called"); // Debug
+
+    const sql = "SELECT img, capion, memberName FROM posts"; // ตรวจสอบว่าตาราง posts มีอยู่
+
+    console.log("📥 Executing SQL Query..."); // Debug ก่อนเรียก query
+
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error("❌ Database error:", err); // Debug หากมีปัญหา MySQL
+            return res.status(500).send("Database error");
+        }
+
+        // console.log("✅ Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
+
+        // แปลง Buffer เป็น Base64 สำหรับ img
+        const formattedResults = results.map(post => ({
+            ...post,
+            img: post.img ? post.img.toString('base64') : null
+        }));
+
+        // console.log("✅ Formatted Results:", formattedResults); // Debug ข้อมูลที่จะแสดงใน EJS
+
+        // ส่งตัวแปรไปยัง home.ejs
+        res.render('home', { posts: formattedResults, username: req.session.username });
+    });
+});
+
+
+
+
+
 
 const storage = multer.memoryStorage(); // ใช้ memoryStorage สำหรับเก็บไฟล์ใน RAM ชั่วคราว
 const upload = multer({ storage });
@@ -72,18 +109,20 @@ router.post("/create_post",upload.single("image"), (req, res) => {
         }if (results.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
-        const memberID = results[0].ID
-        const member_name = results[0].username
+        const memberID = results[0].ID;
+        const member_name = results[0].username;
         const fileBuffer = req.file.buffer; // ดึงข้อมูลไฟล์จาก RAM
-        const caption = req.body.caption;
+        const capion = req.body.capion;
 
-        const insertSql  = "INSERT INTO post (img,capion,memberID,memberName) VALUES (?,?,?,?)";
-        pool.query(insertSql , [fileBuffer,caption,memberID,member_name], (err, result) => {
+
+        const insertSql  = "INSERT INTO posts (img,capion,memberID,memberName) VALUES (?,?,?,?)";
+        pool.query(insertSql , [fileBuffer,capion,memberID,member_name], (err, result) => {
             if (err) {
                 console.error("Error saving to database:", err);
                 return res.status(500).send("Database error");
             }
-            res.render("home", { username: username });
+            res.redirect("/home");
+            // res.redirect("/home", { username: username });
             // res.send({ message: "File uploaded successfully"});
         });
     });
@@ -91,21 +130,8 @@ router.post("/create_post",upload.single("image"), (req, res) => {
 });
 
 
-router.get('/', (req, res) => {
-    const sql = "SELECT img, capion, memberName FROM post";
 
-    pool.query(sql, (err, results) => {
-        if (err) {
-            console.error("Error retrieving posts:", err);
-            return res.status(500).send("Database error");
-        }
 
-        console.log("Posts from database:", results); // ตรวจสอบผลลัพธ์จากฐานข้อมูลใน Console
-
-        // ส่งตัวแปร posts ไปยัง home.ejs
-        res.render('member/home', { posts: results });
-    });
-});
 
 
 

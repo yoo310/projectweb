@@ -15,7 +15,7 @@ router.use(bodyParser.json());
 router.use(session({
     secret: 'adlfhlaskjdhfkljsdfh',  // คีย์เข้ารหัส sessions
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: 900000 } // อายุ session 15 นาที
 }));
 
@@ -57,12 +57,11 @@ router.post('/verify',(req,res) => {
 router.get('/home', (req, res) => {
     username = req.session.username;
 
-    console.log("req.session.username : ",username); // Debug
-    console.log("✅ GET /home route called"); // Debug
+    // console.log("req.session.username : ",username); // Debug
+    // console.log("GET /home route called"); // Debug
 
     const sql = "SELECT img, capion, memberName FROM posts"; // ตรวจสอบว่าตาราง posts มีอยู่
-
-    console.log("📥 Executing SQL Query..."); // Debug ก่อนเรียก query
+    // console.log("Executing SQL Query...");
 
     pool.query(sql, (err, results) => {
         if (err) {
@@ -70,16 +69,13 @@ router.get('/home', (req, res) => {
             return res.status(500).send("Database error");
         }
 
-        // console.log("✅ Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
+        // console.log("Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
 
         // แปลง Buffer เป็น Base64 สำหรับ img
         const formattedResults = results.map(post => ({
             ...post,
             img: post.img ? post.img.toString('base64') : null
         }));
-
-        // console.log("✅ Formatted Results:", formattedResults); // Debug ข้อมูลที่จะแสดงใน EJS
-
         // ส่งตัวแปรไปยัง home.ejs
         res.render('home', { posts: formattedResults, username: req.session.username });
     });
@@ -128,6 +124,33 @@ router.post("/create_post",upload.single("image"), (req, res) => {
     });
     
 });
+
+router.get('/profile', (req, res) => {
+    const username = req.session.username; 
+    console.log("Username in session:", username);
+
+    if (!username) {
+        return res.redirect('/login'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
+    }
+
+    const sql = "SELECT * FROM member WHERE username = ?";
+    pool.query(sql, [username], (err, results) => {
+        if (err) {
+            console.log("❌ Database error:", err);
+            return res.redirect('/login');
+        }
+
+        if (results.length === 0) {
+            console.log("❌ User not found!");
+            return res.redirect('/login');
+        }
+
+        console.log("User found:", results[0]);
+
+        res.render("profile", { username: results[0].username, userData: results[0] });
+    });
+});
+
 
 
 

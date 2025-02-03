@@ -5,7 +5,9 @@ const session = require('express-session')
 const multer = require('multer')
 const bodyParser = require('body-parser')
 const path = require('path')
+const fs = require('fs');
 const router = express.Router()
+
 
 require('dotenv').config();
 
@@ -73,12 +75,18 @@ router.post('/sing-up2', (req, res) => {
     console.log("Step 2 data saved:", req.session.step2);
 
     // ดึงค่าที่ต้องการจาก session step1 และ step2
+
+    const defaultAvatarPath = path.join(__dirname, '../Static/IMG/Untitled.png');
+    const defaultAvatar = fs.readFileSync(defaultAvatarPath); // อ่านไฟล์รูปเป็น Buffer
+
     const { email, username, password } = req.session.step1; // ข้อมูล step1
     const { gender, age, distance } = req.session.step2;     // ข้อมูล step2
+    
+
 
     // SQL สำหรับเพิ่มข้อมูลลงในฐานข้อมูล
-    const sql = "INSERT INTO member (email, username, password, gender, age, distance) VALUES (?, ?, ?, ?, ?, ?)";
-    pool.query(sql, [email, username, md5(password), gender, age, distance], (err, results) => {
+    const sql = "INSERT INTO member (email, username, password, gender, age, distance,avatar) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    pool.query(sql, [email, username, md5(password), gender, age, distance,defaultAvatar], (err, results) => {
         if (err) {
             console.log('Database error:', err); // แสดงข้อความ error หากมีปัญหากับฐานข้อมูล
             return res.render('sing_up1', { msg: 'Database error occurred' }); // ส่งกลับไปยัง sing_up1 พร้อมข้อความ error

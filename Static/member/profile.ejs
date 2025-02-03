@@ -79,7 +79,12 @@
 
     <div class="info">
         <div>
-            <img src="../IMG/Untitled.png">
+            <% if (userData.avatar) { %>
+                <h3>Your Avatar</h3>
+                <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+            <% } else { %>
+                <img style="width: 150px;" src="../IMG/Untitled.png">
+            <% } %>
         </div>
         <div class="detail">
             <h1><%= username %></h1><br>
@@ -96,6 +101,35 @@
     </div>
 
     <div class="postt">
+        <div class="all-post">
+            <h2>Debug: จำนวนโพสต์ที่ได้รับ = <%= typeof postAt_past !== 'undefined' ? postAt_past.length : 0 %></h2> <!-- Debug -->
+        
+            <% if (postAt_past && postAt_past.length > 0) { %>
+                <% postAt_past.forEach(function(post) { %>
+                    <div class="post">
+                        <% if (postAt_past.posterAvatar) { %>
+                            <h3>Your Avatar</h3>
+                            <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                        <% } else { %>
+                            <img style="width: 50px;" src="../IMG/Untitled.png">
+                        <% } %>
+
+                        <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
+                        <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
+                        
+                        <% if (post.img) { %>
+                            <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                        <% } %>
+
+                        <p><small>โพสต์เมื่อ: <%= post.time %></small></p>
+                        
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>⚠️ ไม่มีโพสต์</p>
+            <% } %>
+        </div>
+
         <div class="user_post">
             <div class="posts">
                 <div class="pros">

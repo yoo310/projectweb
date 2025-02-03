@@ -70,7 +70,7 @@
                 <div class="user_profile_">
                     <div class="left">
                         <img id="profile" src="../IMG/Untitled.png" alt="">
-                        <a href="">Somchai_UP</a>
+                        <a href=""><%= username %></a>
                     </div>
 
                     <div class="right">
@@ -146,6 +146,13 @@
                 <% if (posts && posts.length > 0) { %>
                     <% posts.forEach(function(post) { %>
                         <div class="post">
+                            <% if (post.avatar) { %>
+                                <h3>Your Avatar</h3>
+                                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                            <% } else { %>
+                                <img style="width: 50px;" src="../IMG/Untitled.png">
+                            <% } %>
+
                             <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
                             <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
                             

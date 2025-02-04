@@ -66,7 +66,7 @@ router.get('/home', (req, res) => {
     // console.log("req.session.avata : ",avatar); // Debug
     // console.log("GET /home route called"); // Debug
 
-    const sql = "SELECT img, capion, memberName FROM posts ORDER BY TIME DESC"; // ตรวจสอบว่าตาราง posts มีอยู่
+    const sql = "SELECT memberID, img, capion, time, memberName FROM posts ORDER BY TIME DESC"; // ตรวจสอบว่าตาราง posts มีอยู่
     // console.log("Executing SQL Query...");
 
     pool.query(sql, (err, results) => {
@@ -80,10 +80,18 @@ router.get('/home', (req, res) => {
         // แปลง Buffer เป็น Base64 สำหรับ img
         const formattedResults = results.map(posts => ({
             ...posts,
+            time: new Date(posts.time).toLocaleDateString('th-TH', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false // 24 ชั่วโมง
+            }),
             img: posts.img ? posts.img.toString('base64') : null
         }));
         // ส่งตัวแปรไปยัง home.ejs
-        res.render('home', { posts: formattedResults, username: req.session.username });
+        res.render('home', { posts: formattedResults, username: req.session.username});
     });
 });
 
@@ -102,7 +110,7 @@ router.post("/create_post",upload.single("image"), (req, res) => {
     // console.log("/create_post "); 
     // console.log(" req.session.username : ",username);
     // console.log(" req.session.username : ",avatar);
-
+    
     if (!username){
         return res.send("User not logged in");
     }
@@ -165,7 +173,7 @@ router.get('/profile', (req, res) => {
         }
 
         const userid = userData.id;
-        console.log(userid);
+        // console.log(userid);
         const mypost = "SELECT * FROM posts WHERE memberID = ?"
         pool.query(mypost, [userid], (err, results) => {
             if (err) {
@@ -190,11 +198,75 @@ router.get('/profile', (req, res) => {
                 img: post.img ? post.img.toString('base64') : null, // ตรวจสอบประเภทของไฟล์ก่อนแปลงเป็น Base64:
                 posterAvatar: post.posterAvatar ? post.posterAvatar.toString('base64') : null
             }));
-            console.log("✅ Posts Data:", formattedResultsFromPosts);
+            // console.log("✅ Posts Data:", formattedResultsFromPosts);
             res.render("profile", { username: userData.username, userData, postAt_past: formattedResultsFromPosts });
         });
     }); 
 });
+
+router.get("/profile/:username", (req, res) => {
+    const memberName = req.params.username?.trim(); // ✅ ตัดช่องว่างที่อาจเกิดขึ้น
+    
+    //  memberName อย่างละเอียด
+    if (!username) {
+        return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
+    }
+
+    const sql = "SELECT * FROM member WHERE username = ?";
+    pool.query(sql, [memberName], (err, results) => {
+        if (err) {
+            console.error("❌ Database error:", err);
+            return res.status(500).send("Database error.");
+        }
+        if (results.length === 0) {
+            return res.status(404).send("❌ ไม่พบข้อมูลผู้ใช้");
+        }
+        const formattedResults = results.map(data => ({
+            ...data,
+            avatar: data.avata ? data.avata.toString('base64') : null
+        }));
+        const userData = formattedResults[0];
+
+        // console.log("✅ userData:", userData); // ตรวจสอบ userData ก่อนใช้
+        
+        if (!userData) {
+            console.log("❌ userData is undefined");
+            return res.redirect('/sing_in');
+        }
+
+        const userid = userData.id;
+        // console.log(userid);
+        const mypost = "SELECT * FROM posts WHERE memberID = ?"
+        pool.query(mypost, [userid], (err, results) => {
+            if (err) {
+                console.log("❌ Database error:", err);
+                return res.redirect('/sing_in');
+            }
+            if (results.length === 0) {
+                console.log("❌ User not found!");
+                return res.redirect('/sing_in');
+            }
+            const formattedResultsFromPosts = results.map(post => ({ // post => ({ ...post }) หรือ callback function ที่ใช้ใน map() คุณสามารถกำหนดชื่อพารามิเตอร์ใน map() เป็นอะไรก็ได้
+                ...post,
+                // toLocaleDateString() เป็นเมธอดใน JavaScript ที่ช่วยจัดรูปแบบวันที่ตามภาษาหรือรูปแบบที่กำหนด
+                time: new Date(post.time).toLocaleDateString('th-TH', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false // 24 ชั่วโมง
+                }),
+                img: post.img ? post.img.toString('base64') : null, // ตรวจสอบประเภทของไฟล์ก่อนแปลงเป็น Base64:
+                posterAvatar: post.posterAvatar ? post.posterAvatar.toString('base64') : null
+            }));
+            // console.log("✅ Posts Data:", formattedResultsFromPosts);
+            res.render("profile", { username: userData.username, userData, postAt_past: formattedResultsFromPosts });
+        });
+
+    });
+});
+
 
 
 module.exports = router;

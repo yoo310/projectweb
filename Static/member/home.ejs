@@ -84,10 +84,11 @@
                 <div class="add_more">
                     <div class="icons">
                         <label for="image"><i class='bx bxs-photo-album'></i></label>
-                        <input type="file" id="image" name="image" accept="image/*">
+                        <input type="file" id="image" name="image" accept="image/*" required>
                         <!-- <a href=""><i class='bx bxs-photo-album'></i></a> -->
                         <!-- <a href=""><i class='bx bxs-location-plus'></i></a>
                         <a href=""><i class='bx bxs-file-gif'></i></a> -->
+                        
                     </div>
                     <div class="post">
                         <button type="submit" onclick="close_pop_up()">Post</button>
@@ -99,7 +100,7 @@
     <div class="nav">
         <div class="left">
             <a href="">
-                <a href="home.html"><img style="width: 40px;" src="../IMG/Logo2.png"></a>
+                <a href="#"><img style="width: 40px;" src="../IMG/Logo2.png"></a>
             </a>
             <input type="text" placeholder="search">
             <i class='bx bx-search'></i>
@@ -108,12 +109,7 @@
             <a href="home.html"><i class='bx bx-home' style='color:#fffcfc'></i></a>
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
             <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
-            <form action="user/profile" method="get">
-                <button type="submit" style="border: none; background: none; padding: 0; cursor: pointer;">
-                    <img style="width: 40px;" src="../IMG/Untitled.png">
-                </button>
-            </form>
-            
+            <a href="/profile"><img style="width: 40px;" src="../IMG/Untitled.png"></a>
         </div>
     </div>
 
@@ -153,8 +149,10 @@
                                 <img style="width: 50px;" src="../IMG/Untitled.png">
                             <% } %>
 
-                            <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
+                            <h3>โพสต์โดย: <a href="/profile/<%= post.memberName %>"><%= post.memberName %></a></h3>
                             <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
+                            <p><%= post.time %></p> <!-- เวลาที่โพสต์ -->
+
                             
                             <% if (post.img) { %>
                                 <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">

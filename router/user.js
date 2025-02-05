@@ -12,6 +12,9 @@ require('dotenv').config();
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
 
+const storage = multer.memoryStorage(); // ใช้ memoryStorage สำหรับเก็บไฟล์ใน RAM ชั่วคราว
+const upload = multer({ storage });
+
 router.use(session({
     secret: 'adlfhlaskjdhfkljsdfh',  // คีย์เข้ารหัส sessions
     resave: false,
@@ -41,6 +44,7 @@ router.post('/verify',(req,res) => {
             return res.render('sing_in', { msg: '❌ Wrong username or password' });
         } 
         const user = results[0]
+        // console.log(user)
         const username = user.username
         if(user.password !== hashedPassword){
             return res.render('sing_in', { msg: '❌ Wrong username or password' });
@@ -50,6 +54,7 @@ router.post('/verify',(req,res) => {
         
         req.session.username = username
         req.session.avatar = avatarBase64
+        req.session.userid = user.id 
         // res.render('home', { username });
         res.redirect('/home');
         
@@ -58,17 +63,17 @@ router.post('/verify',(req,res) => {
 });
 
 router.get('/home', (req, res) => {
-    username = req.session.username;
-    avatar = req.session.avatar;
+    const username = req.session.username;
+    const avatar = req.session.avatar;
 
-    // console.log("/home "); // Debug
-    // console.log("req.session.username : ",username); // Debug
-    // console.log("req.session.avata : ",avatar); // Debug
-    // console.log("GET /home route called"); // Debug
+    const sql = `
+        SELECT p.*, m.username, m.avatar, m.id
+        FROM posts as p
+        JOIN member as m ON p.ownerID = m.id
+        ORDER BY p.time DESC
+    `; // p.* → ดึง ทุกคอลัมน์ จากตาราง posts
 
-    const sql = "SELECT memberID, img, capion, time, memberName FROM posts ORDER BY TIME DESC"; // ตรวจสอบว่าตาราง posts มีอยู่
-    // console.log("Executing SQL Query...");
-
+    // จัดกลุ่มโพสต์ของแต่ละ user
     pool.query(sql, (err, results) => {
         if (err) {
             console.error("❌ Database error:", err); // Debug หากมีปัญหา MySQL
@@ -77,31 +82,37 @@ router.get('/home', (req, res) => {
 
         // console.log("Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
 
-        // แปลง Buffer เป็น Base64 สำหรับ img
-        const formattedResults = results.map(posts => ({
-            ...posts,
-            time: new Date(posts.time).toLocaleDateString('th-TH', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false // 24 ชั่วโมง
-            }),
-            img: posts.img ? posts.img.toString('base64') : null
-        }));
+        const groupedPosts = {};
+        results.forEach(post => {
+            const userID = post.ownerID;
+            if (!groupedPosts[userID]) {
+                groupedPosts[userID] = {
+                    userid:userID,
+                    username: post.username,
+                    avatar: post.avatar ? post.avatar.toString('base64') : null,
+                    posts: []
+                };
+            }
+            groupedPosts[userID].posts.push({
+                postID: post.postID, // ใช้ post.id สำหรับฟีเจอร์ Join
+                capion: post.capion,
+                time: new Date(post.time).toLocaleDateString('th-TH', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }),
+                ownerID:post.ownerID,
+                img: post.img ? post.img.toString('base64') : null
+            });
+        });
         // ส่งตัวแปรไปยัง home.ejs
-        res.render('home', { posts: formattedResults, username: req.session.username});
+
+        res.render('home', {groupedPosts,username,avatar });
     });
 });
-
-
-
-
-
-
-const storage = multer.memoryStorage(); // ใช้ memoryStorage สำหรับเก็บไฟล์ใน RAM ชั่วคราว
-const upload = multer({ storage });
 
 router.post("/create_post",upload.single("image"), (req, res) => {
      // ตรวจสอบค่าทั้งหมดที่ได้รับ
@@ -144,6 +155,22 @@ router.post("/create_post",upload.single("image"), (req, res) => {
     
 });
 
+router.post('/join',(req,res) => {
+    const userid = req.session.userid
+    const {postID,ownerID} = req.body;
+
+    const sql = "INSERT INTO join_posts (ownerID,postID,userID) VALUES (?,?,?)"
+    pool.query(sql,[ownerID,postID,userid],(err,results) =>{
+        if (err) {
+            console.error("Error saving to database:", err);
+            res.redirect('/home')
+        }
+        res.redirect('/home')
+    });
+    
+});
+
+ 
 router.get('/profile', (req, res) => {
     const username = req.session.username; 
     // console.log("Username in session:", username);
@@ -174,7 +201,7 @@ router.get('/profile', (req, res) => {
 
         const userid = userData.id;
         // console.log(userid);
-        const mypost = "SELECT * FROM posts WHERE memberID = ?"
+        const mypost = "SELECT * FROM posts WHERE ownerID = ?"
         pool.query(mypost, [userid], (err, results) => {
             if (err) {
                 console.log("❌ Database error:", err);
@@ -266,6 +293,8 @@ router.get("/profile/:username", (req, res) => {
 
     });
 });
+
+
 
 
 

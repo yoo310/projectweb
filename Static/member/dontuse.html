@@ -1,0 +1,65 @@
+<h2>Debug: จำนวนโพสต์ที่ได้รับ = <%= typeof posts !== 'undefined' ? posts.length : 0 %></h2> <!-- Debug -->
+            
+                <% if (posts && posts.length > 0) { %>
+                    <% posts.forEach(function(post) { %>
+                        <div class="post">
+                            <% if (post.avatar) { %>
+                                <h3>Your Avatar</h3>
+                                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                            <% } else { %>
+                                <img style="width: 50px;" src="../IMG/Untitled.png">
+                            <% } %>
+
+                            <h3>โพสต์โดย: <a href="/profile/<%= post.memberName %>"><%= post.memberName %></a></h3>
+                            <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
+                            <><%= post.time %></p> <!-- เวลาที่โพสต์ -->
+
+                            
+                            <% if (post.img) { %>
+                                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                            <% } %>
+                            <a href=""><i class='bx bxs-heart'></i>Interested</a>
+                            <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
+                            <a href="/join"><i class='bx bx-group'></i>Join</a>
+                            <a href=""><i class='bx bxs-share'></i>Share</a>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>⚠️ ไม่มีโพสต์</p>
+                <% } %>
+            </div>
+
+
+
+
+
+
+
+<!-- *******************profilr********************************* -->
+<h2>Debug: จำนวนโพสต์ที่ได้รับ = <%= typeof postAt_past !== 'undefined' ? postAt_past.length : 0 %></h2> <!-- Debug -->
+        
+<% if (postAt_past && postAt_past.length > 0) { %>
+    <% postAt_past.forEach(function(post) { %>
+        <div class="post">
+            <% if (postAt_past.posterAvatar) { %>
+                <h3>Your Avatar</h3>
+                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+            <% } else { %>
+                <img style="width: 50px;" src="../IMG/Untitled.png">
+            <% } %>
+
+            <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
+            <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
+            
+            <% if (post.img) { %>
+                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+            <% } %>
+
+            <p><small>โพสต์เมื่อ: <%= post.time %></small></p>
+            
+        </div>
+    <% }); %>
+<% } else { %>
+    <p>⚠️ ไม่มีโพสต์</p>
+<% } %>
+</div>

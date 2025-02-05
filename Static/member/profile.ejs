@@ -102,80 +102,66 @@
 
     <div class="postt">
         <div class="all-post">
-            <h2>Debug: จำนวนโพสต์ที่ได้รับ = <%= typeof postAt_past !== 'undefined' ? postAt_past.length : 0 %></h2> <!-- Debug -->
-        
             <% if (postAt_past && postAt_past.length > 0) { %>
                 <% postAt_past.forEach(function(post) { %>
-                    <div class="post">
-                        <% if (postAt_past.posterAvatar) { %>
-                            <h3>Your Avatar</h3>
-                            <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
-                        <% } else { %>
-                            <img style="width: 50px;" src="../IMG/Untitled.png">
-                        <% } %>
-
-                        <h3>โพสต์โดย: <%= post.memberName %></h3> <!-- ชื่อผู้โพสต์ -->
-                        <p><%= post.capion %></p> <!-- ข้อความโพสต์ -->
-                        
-                        <% if (post.img) { %>
-                            <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
-                        <% } %>
-
-                        <p><small>โพสต์เมื่อ: <%= post.time %></small></p>
-                        
+                    <div class="user_post">
+                        <div class="posts">
+                            <div class="pros">
+                                <% if (postAt_past.posterAvatar) { %>
+                                <h3>Your Avatar</h3>
+                                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                                <% } else { %>
+                                    <img style="width: 50px;" src="../IMG/Untitled.png">
+                                <% } %>
+                                <p>โพสต์โดย: <%= post.memberName %></p>
+                            </div>
+                            <div>
+                                <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                            </div>
+                        </div>
+                        <div class="title">
+                            <p><%= post.capion %></p>
+                            <p><%= post.time %></p>
+                        </div>
+                        <div class="badmi">
+                            <% if (post.img) { %>
+                                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                            <% } %>
+                        </div>
+                        <div class="icon">
+                            <a href=""><i class='bx bxs-heart'></i>Interested</a>
+                            <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
+                            <a href=""><i class='bx bx-group'></i>Join</a>
+                            <a href=""><i class='bx bxs-share'></i>Share</a>
+                        </div>
                     </div>
                 <% }); %>
             <% } else { %>
-                <p>⚠️ ไม่มีโพสต์</p>
+                    <p>⚠️ ไม่มีโพสต์</p>
             <% } %>
-        </div>
-
-        <div class="user_post">
-            <div class="posts">
-                <div class="pros">
-                    <img src="../IMG/Untitled.png">
-                    <p>Somchai_UP</p>
+            <!-- <div class="user_post">
+                <div class="posts">
+                    <div class="pros">
+                        <img src="../IMG/Untitled.png">
+                        <p>Somchai_UP</p>
+                    </div>
+                    <div>
+                        <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                    </div>
                 </div>
-                <div>
-                    <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                <div class="title">
+                    <p>หาเพื่อนเล่นบาสครับ😥 #แบดมินตัน เวลานัด 14.00</p>
                 </div>
-            </div>
-            <div class="title">
-                <p>หาเพื่อนตีแบตครับ😥 #แบดมินตัน เวลานัด 17.00</p>
-            </div>
-            <div class="badmi">
-                <img src="../IMG/badminton.webp">
-            </div>
-            <div class="icon">
-                <a href=""><i class='bx bxs-heart'></i>Interested</a>
-                <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
-                <a href=""><i class='bx bx-group'></i>Join</a>
-                <a href=""><i class='bx bxs-share'></i>Share</a>
-            </div>
-        </div>
-        <div class="user_post">
-            <div class="posts">
-                <div class="pros">
-                    <img src="../IMG/Untitled.png">
-                    <p>Somchai_UP</p>
+                <div class="badmi">
+                    <img src="../IMG/Basketball-Court-Mahasarakham-University.jpg">
                 </div>
-                <div>
-                    <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                <div class="icon">
+                    <a href=""><i class='bx bxs-heart'></i>Interested</a>
+                    <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
+                    <a href=""><i class='bx bx-group'></i>Join</a>
+                    <a href=""><i class='bx bxs-share'></i>Share</a>
                 </div>
-            </div>
-            <div class="title">
-                <p>หาเพื่อนเล่นบาสครับ😥 #แบดมินตัน เวลานัด 14.00</p>
-            </div>
-            <div class="badmi">
-                <img src="../IMG/Basketball-Court-Mahasarakham-University.jpg">
-            </div>
-            <div class="icon">
-                <a href=""><i class='bx bxs-heart'></i>Interested</a>
-                <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
-                <a href=""><i class='bx bx-group'></i>Join</a>
-                <a href=""><i class='bx bxs-share'></i>Share</a>
-            </div>
-        </div>
+            </div> -->
     </div>
 </body>
 

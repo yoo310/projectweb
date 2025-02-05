@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../css/profile.css">
+    <script src="..//javascript/profile.js"></script>
+</head>
+
+<body>
+    <div class="float-chat" id="chat-button">
+        <i class='bx bx-chat' style='color:#fffcfc'></i>
+    </div>
+
+    <div id="chat-pop-up" class="chat-pop-up">
+        <div class="chat" onclick="ChatOpen()">
+            <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
+            <span>Friend 1</span>
+        </div>
+        <div class="chat" onclick="ChatOpen()">
+            <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
+            <span>Friend 2</span>
+        </div>
+        <div class="chat" onclick="ChatOpen()">
+            <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
+            <span>Friend 3</span>
+        </div>
+        <div class="chat" onclick="ChatOpen()">
+            <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
+            <span>Friend 4</span>
+        </div>
+    </div>
+
+    <div id="float-chat-user" class="float-chat-user">
+        <div class="top">
+            <div class="infoooo">
+                <div class="info">
+                    <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
+                </div>
+                <span>Friend 1</span>
+            </div>
+            <div class="exit">
+                <i class='bx bx-x' onclick="closechat()"></i>
+            </div>
+        </div>
+        <div class="chat-text">
+        </div>
+        <div class="bottom">
+            <div class="split">
+                <a href=""><i class='bx bxs-photo-album'></i></a>
+                <a href=""><i class='bx bxs-location-plus'></i></a>
+                <a href=""><i class='bx bxs-file-gif'></i></a>
+            </div>
+            <div class="send-text">
+                <input type="text">
+                <i class='bx bx-send'></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="left">
+            
+            <a href="/home"><img style="width: 40px;" src="../IMG/Logo2.png"></a>
+            
+            <input type="text" placeholder="search">
+            <i class='bx bx-search'></i>
+        </div>
+        <div class="right">
+            <a href="home.html"><i class='bx bx-home' style='color:#fffcfc'></i></a>
+            <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
+            <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
+            <a href="#"><img style="width: 40px;" src="../IMG/Untitled.png"></a>
+        </div>
+    </div>
+
+    <div class="info">
+        <div>
+            <% if (userData.avatar) { %>
+                <h3>Your Avatar</h3>
+                <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+            <% } else { %>
+                <img style="width: 150px;" src="../IMG/Untitled.png">
+            <% } %>
+        </div>
+        <div class="detail">
+            <h1><%= username %></h1><br>
+            <p>Garder: <%= userData.gender %>, age <%= userData.age %></p>
+            <p>Interested sports: <%= userData.Interested %> </p><br>
+            <!-- <p>2 friends</p> -->
+        </div>
+
+        <a href="/profile_edit">
+            <button type="button">Edit Profile</button>
+        </a>
+    </div>
+
+    <div class="nav_post">
+        <a style="font-weight: bold;" href="/atvt">Activity room</a>
+        <div class="line"></div>
+        <a href="/past_atvt">Past activity room</a>
+    </div>
+
+    <div class="postt">
+        <div class="all-post">
+            <% if (postAt_past && postAt_past.length > 0) { %>
+                <% postAt_past.forEach(function(post) { %>
+                    <div class="user_post">
+                        <div class="posts">
+                            <div class="pros">
+                                <% if (postAt_past.posterAvatar) { %>
+                                <h3>Your Avatar</h3>
+                                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                                <% } else { %>
+                                    <img style="width: 50px;" src="../IMG/Untitled.png">
+                                <% } %>
+                                <p>โพสต์โดย: <%= post.memberName %></p>
+                            </div>
+                            <div>
+                                <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                            </div>
+                        </div>
+                        <div class="title">
+                            <p><%= post.capion %></p>
+                            <p><%= post.time %></p>
+                        </div>
+                        <div class="badmi">
+                            <% if (post.img) { %>
+                                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                            <% } %>
+                        </div>
+                        <div class="icon">
+                            <a href=""><i class='bx bxs-heart'></i>Interested</a>
+                            <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
+                            <a href=""><i class='bx bx-group'></i>Join</a>
+                            <a href=""><i class='bx bxs-share'></i>Share</a>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                    <p>⚠️ ไม่มีโพสต์</p>
+            <% } %>
+            <!-- <div class="user_post">
+                <div class="posts">
+                    <div class="pros">
+                        <img src="../IMG/Untitled.png">
+                        <p>Somchai_UP</p>
+                    </div>
+                    <div>
+                        <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
+                    </div>
+                </div>
+                <div class="title">
+                    <p>หาเพื่อนเล่นบาสครับ😥 #แบดมินตัน เวลานัด 14.00</p>
+                </div>
+                <div class="badmi">
+                    <img src="../IMG/Basketball-Court-Mahasarakham-University.jpg">
+                </div>
+                <div class="icon">
+                    <a href=""><i class='bx bxs-heart'></i>Interested</a>
+                    <a href=""><i class='bx bxs-comment-detail'></i>Comment</a>
+                    <a href=""><i class='bx bx-group'></i>Join</a>
+                    <a href=""><i class='bx bxs-share'></i>Share</a>
+                </div>
+            </div> -->
+    </div>
+</body>
+
+</html>

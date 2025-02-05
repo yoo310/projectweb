@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="../css/editProfile.css">
+</head>
+
+<body>
+    <div class="profile-edit">
+        <div class="left">
+            <h1>Edit Profile</h1>
+            <img src="../IMG/Logo2.png" alt="Logo" class="logo">
+            <p>Update your profile to find the <span class="highlight">perfect workout buddy!!!</span></p>
+        </div>
+
+        <div class="right">
+            <h2>Profile Information</h2>
+            <form action="/profile/update" method="post" enctype="multipart/form-data">
+
+                <!-- ✅ แสดงรูปโปรไฟล์เดิม -->
+                <div class="avatar-container">
+                    <% if (userData.avatar) { %>
+                        <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" class="profile-pic">
+                    <% } else { %>
+                        <img src="../IMG/default-avatar.png" alt="Default Avatar" class="profile-pic">
+                    <% } %>
+                </div>
+
+                <label for="avatar">Change Profile Picture</label>
+                <input type="file" name="avatar" id="avatar" accept="image/*">
+
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" value="<%= userData.username %>" required>
+
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" value="<%= userData.email %>" required>
+
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender">
+                    <option value="Male" <% if (userData.gender === 'Male') { %> selected <% } %>>Male</option>
+                    <option value="Female" <% if (userData.gender === 'Female') { %> selected <% } %>>Female</option>
+                    <option value="Other" <% if (userData.gender === 'Other') { %> selected <% } %>>Other</option>
+                </select>
+
+                <label for="age">Age</label>
+                <input type="number" name="age" id="age" value="<%= userData.age %>" required>
+
+                <label for="interests">Interests</label>
+                <input type="text" name="interests" id="interests" value="<%= userData.interests %>" required>
+
+                <div class="save-btn">
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
+            
+            <!-- ✅ แสดงข้อความแจ้งเตือน -->
+            <p class="message"><%= locals?.msg ? msg : "" %></p>
+        </div>
+    </div>
+</body>
+
+</html>

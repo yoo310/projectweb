@@ -64,7 +64,7 @@ router.post('/verify',(req,res) => {
 
 router.get('/home', (req, res) => {
     const username = req.session.username;
-    const avatar = req.session.avatar;
+    const userid = req.session.userid;
 
     const sql = `
         SELECT p.*, m.username, m.avatar, m.id
@@ -73,6 +73,8 @@ router.get('/home', (req, res) => {
         ORDER BY p.time DESC
     `; // p.* → ดึง ทุกคอลัมน์ จากตาราง posts
 
+    const userSql = "SELECT avatar FROM member WHERE id = ?"; // ดึง avatar ของตัวเอง
+
     // จัดกลุ่มโพสต์ของแต่ละ user
     pool.query(sql, (err, results) => {
         if (err) {
@@ -80,37 +82,46 @@ router.get('/home', (req, res) => {
             return res.status(500).send("Database error");
         }
 
-        // console.log("Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
-
-        const groupedPosts = {};
-        results.forEach(post => {
-            const userID = post.ownerID;
-            if (!groupedPosts[userID]) {
-                groupedPosts[userID] = {
-                    userid:userID,
-                    username: post.username,
-                    avatar: post.avatar ? post.avatar.toString('base64') : null,
-                    posts: []
-                };
+        pool.query(userSql, [userid], (err, userResults) => {
+            if (err) {
+                console.error("❌ Database error (User Avatar):", err);
+                return res.status(500).send("Database error");
             }
-            groupedPosts[userID].posts.push({
-                postID: post.postID, // ใช้ post.id สำหรับฟีเจอร์ Join
-                capion: post.capion,
-                time: new Date(post.time).toLocaleDateString('th-TH', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                }),
-                ownerID:post.ownerID,
-                img: post.img ? post.img.toString('base64') : null
-            });
-        });
-        // ส่งตัวแปรไปยัง home.ejs
 
-        res.render('home', {groupedPosts,username,avatar });
+            // console.log("Posts from database:", results); // Debug ผลลัพธ์จาก MySQL
+
+            const groupedPosts = {};
+            results.forEach(post => {
+                const userID = post.ownerID;
+                if (!groupedPosts[userID]) {
+                    groupedPosts[userID] = {
+                        userid:userID,
+                        username: post.username,
+                        avatar: post.avatar ? post.avatar.toString('base64') : null,
+                        posts: []
+                    };
+                }
+                groupedPosts[userID].posts.push({
+                    postID: post.postID, // ใช้ post.id สำหรับฟีเจอร์ Join
+                    capion: post.capion,
+                    time: new Date(post.time).toLocaleDateString('th-TH', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }),
+                    ownerID:post.ownerID,
+                    img: post.img ? post.img.toString('base64') : null
+                });
+            });
+
+            // ✅ ดึง avatar ของ User ที่ล็อกอิน
+            const userAvatar = userResults[0]?.avatar ? userResults[0].avatar.toString('base64') : null;
+            // ส่งตัวแปรไปยัง home.ejs
+            res.render('home', {groupedPosts,username,userAvatar });
+        });
     });
 });
 
@@ -141,7 +152,7 @@ router.post("/create_post",upload.single("image"), (req, res) => {
         const Poster_avatar = avatar
 
 
-        const insertSql  = "INSERT INTO posts (img,capion,memberID,memberName,posterAvatar) VALUES (?,?,?,?,?)";
+        const insertSql  = "INSERT INTO posts (img,capion,ownerID,ownerName,posterAvatar) VALUES (?,?,?,?,?)";
         pool.query(insertSql , [fileBuffer,capion,memberID,member_name,Poster_avatar], (err, result) => {
             if (err) {
                 console.error("Error saving to database:", err);
@@ -226,16 +237,16 @@ router.get('/profile', (req, res) => {
                 posterAvatar: post.posterAvatar ? post.posterAvatar.toString('base64') : null
             }));
             // console.log("✅ Posts Data:", formattedResultsFromPosts);
-            res.render("profile", { username: userData.username, userData, postAt_past: formattedResultsFromPosts });
+            res.render("Myprofile", { username: userData.username, userData, postAt_past: formattedResultsFromPosts });
         });
     }); 
 });
 
 router.get("/profile/:username", (req, res) => {
-    const memberName = req.params.username?.trim(); // ✅ ตัดช่องว่างที่อาจเกิดขึ้น
-    
+    const memberName = req.params.username; // ✅ ตัดช่องว่างที่อาจเกิดขึ้น
+    console.log(memberName)
     //  memberName อย่างละเอียด
-    if (!username) {
+    if (!memberName) {
         return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
     }
 
@@ -263,7 +274,7 @@ router.get("/profile/:username", (req, res) => {
 
         const userid = userData.id;
         // console.log(userid);
-        const mypost = "SELECT * FROM posts WHERE memberID = ?"
+        const mypost = "SELECT * FROM posts WHERE ownerID = ?"
         pool.query(mypost, [userid], (err, results) => {
             if (err) {
                 console.log("❌ Database error:", err);
@@ -294,7 +305,36 @@ router.get("/profile/:username", (req, res) => {
     });
 });
 
+router.get('/profile_edit',(req,res) => {
+    const username = req.session.username;
+    console.log(username) 
 
+    if (!username) {
+        return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
+    }
+
+    const sql = "SELECT * FROM member WHERE username = ?"
+    pool.query(sql,[username],(err,results) => {
+        if (err) {
+            console.log("❌ Database error:", err);
+            return res.redirect('/sing_in');
+        }
+        if (results.length === 0) {
+            console.log("❌ User not found!");
+            return res.redirect('/sing_in');
+        }
+
+        const formattedResults = results.map(data => ({
+            ...data,
+            avatar: data.avata ? data.avata.toString('base64') : null
+        }));
+        const userData = formattedResults[0];
+
+        res.render('editProfile',{userData})
+    });
+});
+
+router.post()
 
 
 

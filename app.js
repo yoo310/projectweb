@@ -14,11 +14,14 @@ let root_path = path.join(__dirname,'Static');
 app.use(express.static(root_path));
 
 
-const userRouter = require('./router/user')
-const registerRouter = require('./router/register')
+const userRouter = require('./router/user');
+const registerRouter = require('./router/register');
+const chatRouter = require('./router/chat');
 app.use('/register',registerRouter);
 app.use('/user',userRouter);
 app.use('/',userRouter);
+app.use('/chat',chatRouter);
+app.use('/',chatRouter);
 
 app.get('/welcome', (req, res) => {
     res.render('welcome')

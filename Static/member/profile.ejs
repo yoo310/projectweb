@@ -70,7 +70,7 @@
             <i class='bx bx-search'></i>
         </div>
         <div class="right">
-            <a href="home.html"><i class='bx bx-home' style='color:#fffcfc'></i></a>
+            <a href="/home"><i class='bx bx-home' style='color:#fffcfc'></i></a>
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
             <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
             <% if (userData.avatar) { %>
@@ -95,9 +95,17 @@
             <h1><%= username %></h1><br>
             <p>Garder: <%= userData.gender %>, age <%= userData.age %></p>
             <p>Interested sports: <%= userData.Interested %> </p><br>
-            <a href="/home">
-                <button type="button">Send message</button>
-            </a>
+            <form action="/chat/create_chat" method="post">
+                <input  hidden type="text" name="receiverName" value="<%= userData.username %>">
+                <input hidden type="text" name="receiverID" value="<%= userData.id %>">
+            
+                <div class="submit">
+                    <button type="submit">Send message</button>
+                </div>
+            </form>
+            
+                
+           
             <!-- <p>2 friends</p> -->
         </div>
     </div>

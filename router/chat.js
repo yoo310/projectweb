@@ -7,20 +7,13 @@ const path = require('path');
 const router = express.Router();
 const sharp = require('sharp'); //อัดไฟล์รูป
 
-require('dotenv').config();
+require('dotenv').config(); 
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
 
 const storage = multer.memoryStorage(); // ใช้ memoryStorage สำหรับเก็บไฟล์ใน RAM ชั่วคราว
 const upload = multer({ storage });
-
-router.use(session({
-    secret: 'adlfhlaskjdhfkljsdfh',  // คีย์เข้ารหัส sessions
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 900000 } // อายุ session 15 นาที
-}));
 
 const pool = mysql.createPool({
     user: process.env.DB_USER,
@@ -48,7 +41,7 @@ const processImage = async (buffer) => {
 router.post('/create_chat',(req,res) => {
     const senderID = req.session.userid;
     const {receiverName,receiverID} = req.body;
-    console.log(receiverName,receiverID,senderID);
+    // console.log(receiverName,receiverID,senderID);
 
     if (!receiverName) {
         return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
@@ -101,7 +94,87 @@ router.post('/create_chat',(req,res) => {
     });
 });
 
-router.get('/chat')
+
+router.get("/showchat", (req, res) => {
+    const userId = req.session.userid; // ใช้ session เพื่อดึง userId
+    console.log("This is showchat", userId)
+    if (!userId) {
+        return res.redirect("/sign_in"); // ถ้ายังไม่ได้ล็อกอินให้ไปหน้า sign in
+    }
+
+    const sql = `
+        SELECT cr.id AS room_id, cr.name AS room_name, cr.type, 
+               m.id AS user_id, m.username, m.email, m.avatar 
+        FROM room_participants AS rp
+        JOIN chat_rooms AS cr ON rp.room_id = cr.id
+        JOIN member AS m ON rp.user_id = m.id
+        WHERE m.id = ?
+    `;
+
+    pool.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error("❌ Error fetching chat data:", err);
+            return res.status(500).send("Error fetching chat data");
+        }
+
+        console.log("✅ Chat Rooms Data:", results); // เช็คว่ามีข้อมูลออกมาไหม
+        res.render("viewchat", { chatRooms: results }); // ส่งข้อมูลไปหน้า EJS
+    });
+});
+
+
+
+router.get('/room/:room_id', (req, res) => {
+    const roomId = req.params.room_id;
+    const userId = req.session.userid;
+
+    if (!userId) {
+        return res.redirect('/sign_up');
+    }
+
+    // ดึงข้อมูลห้องแชท
+    const roomQuery = `SELECT * FROM chat_rooms WHERE id = ?`;
+
+    // ดึงรายชื่อสมาชิกในห้อง
+    const participantsQuery = `
+        SELECT m.id, m.username, m.avatar 
+        FROM room_participants rp 
+        JOIN member m ON rp.user_id = m.id 
+        WHERE rp.room_id = ?`;
+
+    // ดึงข้อความแชท
+    const messagesQuery = `
+        SELECT m.username, c.message, c.sender_id 
+        FROM chat_messages c
+        JOIN member m ON c.sender_id = m.id
+        WHERE c.room_id = ?
+        ORDER BY c.timestamp ASC`;
+
+    pool.query(roomQuery, [roomId], (err, roomResults) => {
+        if (err || roomResults.length === 0) {
+            return res.status(404).send('Chat room not found');
+        }
+
+        pool.query(participantsQuery, [roomId], (err, participantsResults) => {
+            if (err) {
+                return res.status(500).send('Error fetching participants');
+            }
+
+            pool.query(messagesQuery, [roomId], (err, messagesResults) => {
+                if (err) {
+                    return res.status(500).send('Error fetching messages');
+                }
+
+                res.render('chat', {
+                    room: roomResults[0],
+                    participants: participantsResults,
+                    messages: messagesResults,
+                    userId
+                });
+            });
+        });
+    });
+});
 
 
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <link rel="stylesheet" href="/css/chat.css"> <!-- ลิงก์ไปยัง CSS -->
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Available Chat Rooms</h1>
+
+        <% if (chatRooms && chatRooms.length > 0) { %>
+            <div class="chat-list">
+                <% chatRooms.forEach(room => { %>
+                    <div class="chat-room">
+                        <div class="chat-info">
+                            <% if (room.avatar) { %>
+                                <img src="data:image/png;base64,<%= room.avatar.toString('base64') %>" 
+                                    alt="User Avatar" class="avatar">
+                            <% } else { %>
+                                <img src="/IMG/default-avatar.png" alt="Default Avatar" class="avatar">
+                            <% } %>
+                            <div class="room-details">
+                                <h3><%= room.room_name %> (<%= room.type %>)</h3>
+                                <p>Member: <%= room.username %></p>
+                            </div>
+                        </div>
+                        <button class="join-btn" onclick="goToChat('<%= room.room_id %>')">Enter Chat</button>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p>No chat rooms available.</p>
+        <% } %>
+    </div>
+
+    <!-- <script>
+        function goToChat(roomId) {
+            window.location.href = "/chat/room/" + roomId;
+        }
+    </script> -->
+</body>
+</html>

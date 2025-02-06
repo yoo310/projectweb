@@ -390,6 +390,29 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.chat-list {
+    max-height: 300px; /* จำกัดความสูงของรายชื่อแชท */
+    overflow-y: auto; /* เปิดใช้งานการเลื่อน */
+    padding: 10px;
+}
+
+.chat img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* 📌 ปรับแต่ง Scrollbar */
+.chat-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 5px;
+}
+
 #chat-profile {
     margin-right: 5px;
     width: 40px;

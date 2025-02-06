@@ -53,6 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    document.getElementById("chat-button").addEventListener("click", function() {
+        window.location.href = "/chat/showchat"; // ✅ บังคับให้เปลี่ยนหน้า
+    });
+
     window.ChatOpen = function () {
         chatPopup_user.style.display = "flex";
     };

@@ -16,13 +16,6 @@ router.use(bodyParser.json());
 const storage = multer.memoryStorage(); // ใช้ memoryStorage สำหรับเก็บไฟล์ใน RAM ชั่วคราว
 const upload = multer({ storage });
 
-router.use(session({
-    secret: 'adlfhlaskjdhfkljsdfh',  // คีย์เข้ารหัส sessions
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 900000 } // อายุ session 15 นาที
-}));
-
 const pool = mysql.createPool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -71,7 +64,7 @@ router.post('/verify',(req,res) => {
         req.session.userid = user.id 
         console.log(req.session.username)
         // res.render('home', { username });
-        res.redirect('/home');
+        res.redirect('home');
         
     });
 
@@ -206,12 +199,9 @@ router.post('/join',(req,res) => {
                 console.error("Error create chat to database:", err);
                 res.redirect('/home')
             }
-
             res.redirect('/home')
-        })
-        
+        });
     });
-    
 });
 
  

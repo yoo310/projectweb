@@ -73,23 +73,28 @@
             <a href="home.html"><i class='bx bx-home' style='color:#fffcfc'></i></a>
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
             <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
-            <a href="#"><img style="width: 40px;" src="../IMG/Untitled.png"></a>
+            <% if (userData && userData.avatar) { %>
+                <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+            <% } else { %>
+                <img style="width: 50px;" src="../IMG/Untitled.png">
+            <% } %>
+            <!-- <a href="#"><img style="width: 40px;" src="../IMG/Untitled.png"></a> -->
         </div>
     </div>
 
     <div class="info">
         <div>
             <% if (userData.avatar) { %>
-                <h3>Your Avatar</h3>
                 <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
             <% } else { %>
                 <img style="width: 150px;" src="../IMG/Untitled.png">
             <% } %>
+           
         </div>
         <div class="detail">
-            <h1><%= username %></h1><br>
+            <h1><%= userData.username %></h1><br>
             <p>Garder: <%= userData.gender %>, age <%= userData.age %></p>
-            <p>Interested sports: <%= userData.Interested %> </p><br>
+            <p>Interested: <%= userData.Interested %> </p><br>
             <!-- <p>2 friends</p> -->
         </div>
 
@@ -111,13 +116,13 @@
                     <div class="user_post">
                         <div class="posts">
                             <div class="pros">
-                                <% if (postAt_past.posterAvatar) { %>
-                                <h3>Your Avatar</h3>
-                                <img src="data:image/png;base64,<%= post.avatar %>" alt="User Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                                <!-- <img style="width: 50px;" src="../IMG/Untitled.png" alt="Default Avatar"> -->
+                                <% if (userData.avatar) { %> <!--เอาข้อมูลโปรไฟล์จากuser-->
+                                    <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
                                 <% } else { %>
-                                    <img style="width: 50px;" src="../IMG/Untitled.png">
+                                    <img style="width: 150px;" src="../IMG/Untitled.png">
                                 <% } %>
-                                <p>โพสต์โดย: <%= post.memberName %></p>
+                                <p>โพสต์โดย: <%= post.ownerName || "ไม่ทราบชื่อ" %></p>
                             </div>
                             <div>
                                 <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
@@ -128,8 +133,12 @@
                             <p><%= post.time %></p>
                         </div>
                         <div class="badmi">
-                            <% if (post.img) { %>
-                                <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์">
+                            <% if (post.img && post.img.length > 0) { %>
+                                <img src="data:image/jpeg;base64,<%= post.img %>" 
+                                     alt="รูปภาพโพสต์" 
+                                     style="width: 100%; border-radius: 10px;">
+                            <% } else { %>
+                                <p>ไม่มีรูปภาพ</p>
                             <% } %>
                         </div>
                         <div class="icon">
@@ -141,8 +150,11 @@
                     </div>
                 <% }); %>
             <% } else { %>
-                    <p>⚠️ ไม่มีโพสต์</p>
+                <p>ไม่มีโพสต์</p>
             <% } %>
+        </div>
+    </div>
+    
             <!-- <div class="user_post">
                 <div class="posts">
                     <div class="pros">

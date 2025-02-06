@@ -118,7 +118,7 @@
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
             <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
             <a href="/profile"><% if (userAvatar) { %>
-                <img src="data:image/png;base64,<%= userAvatar %>" alt="Your Avatar" style="width: 60px; height: 60px; border-radius: 50%;">
+                <img src="data:image/png;base64,<%= userAvatar %>" alt="Your Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
             <% } else { %>
                 <img style="width: 50px; height: 50px; border-radius: 50%;" src="../IMG/Untitled.png">
             <% } %>
@@ -139,7 +139,7 @@
         <div class="all_post">
             <div class="post">
                 <% if (userAvatar) { %>
-                    <img src="data:image/png;base64,<%= userAvatar %>" alt="Your Avatar" style="width: 60px; height: 60px; border-radius: 50%;">
+                    <img src="data:image/png;base64,<%= userAvatar %>" alt="Your Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
                 <% } else { %>
                     <img style="width: 50px; height: 50px; border-radius: 50%;" src="../IMG/Untitled.png">
                 <% } %>
@@ -155,57 +155,58 @@
             </div>
             
             <div class="all-post">
-                <% if (groupedPosts && Object.keys(groupedPosts).length > 0) { %>
-                    <% Object.keys(groupedPosts).forEach(userID => { %>
-                        <% groupedPosts[userID].posts.forEach(post => { %> 
-                            <div class="user_post"> <!-- 🔹 กรอบโพสต์แต่ละโพสต์ -->
-                                <div class="posts">
-                                    <div class="pros">
-                                        <% if (groupedPosts[userID].avatar) { %>
-                                            <img src="data:image/png;base64,<%= groupedPosts[userID].avatar %>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
-                                        <% } else { %>
-                                            <img style="width: 50px;" src="../IMG/Untitled.png">
-                                        <% } %>
-                                        <p><a href="/profile/<%= groupedPosts[userID].username %>"><%= groupedPosts[userID].username %></a></p>
-                                    </div>
-                                    <div>
-                                        <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
-                                    </div>
-                                </div>
-            
-                                <!-- 🔹 กรอบสำหรับโพสต์แต่ละโพสต์ -->
-                                <div class="title">
-                                    <p><%= post.capion %></p> 
-                                    <p><%= post.time %></p>
-                                </div>
-                                <div class="badmi">
-                                    <% if (post.img) { %>
-                                        <img src="data:image/jpeg;base64,<%= post.img %>" alt="รูปภาพโพสต์" style="width: 100%; border-radius: 10px;">
+                <% if (posts && posts.length > 0) { %>
+                    <% posts.forEach(post => { %>
+                        <div class="user_post">
+                            <div class="posts">
+                                <div class="pros">
+                                    <% if (post.avatar) { %>
+                                        <img src="data:image/png;base64,<%= post.avatar %>" 
+                                             alt="User Avatar" 
+                                             style="width: 50px; height: 50px; border-radius: 50%;">
+                                    <% } else { %>
+                                        <img style="width: 50px;" src="../IMG/Untitled.png">
                                     <% } %>
+                                    <p><a href="/profile/<%= post.ownerName %>"><%= post.ownerName %></a></p>
                                 </div>
-                                <div class="icon">
-                                    <a href=""><i class='bx bxs-heart'></i> Interested</a>
-                                    <a href=""><i class='bx bxs-comment-detail'></i> Comment</a>
-            
-                                    <!-- ฟอร์มที่ซ่อนปุ่มไว้ -->
-                                    <form id="joinForm-<%= post.postID %>" action="/join" method="POST">
-                                        <input type="hidden" name="postID" value="<%= post.postID %>">
-                                        <input type="hidden" name="ownerID" value="<%= post.ownerID %>">
-                                    </form>
-                                    <!-- ลิงก์ <a> กดแล้วส่งฟอร์ม -->
-                                    <a href="#" onclick="document.getElementById('joinForm-<%= post.postID %>').submit(); return false;">
-                                        <i class='bx bx-group'></i> Join
-                                    </a>
-            
-                                    <a href=""><i class='bx bxs-share'></i> Share</a>
+                                <div>
+                                    <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
                                 </div>
                             </div>
-                        <% }); %>
+            
+                            <div class="title">
+                                <p><%= post.capion %></p> 
+                                <p><%= post.time %></p>
+                            </div>
+                            <div class="badmi">
+                                <% if (post.img) { %>
+                                    <img src="data:image/jpeg;base64,<%= post.img %>" 
+                                         alt="รูปภาพโพสต์" 
+                                         style="width: 100%; border-radius: 10px;">
+                                <% } %>
+                            </div>
+                            <div class="icon">
+                                <a href=""><i class='bx bxs-heart'></i> Interested</a>
+                                <a href=""><i class='bx bxs-comment-detail'></i> Comment</a>
+            
+                                <form id="joinForm-<%= post.postID %>" action="/join" method="POST">
+                                    <input type="hidden" name="postID" value="<%= post.postID %>">
+                                    <input type="hidden" name="ownerID" value="<%= post.ownerID %>">
+                                </form>
+                                <a href="#" onclick="document.getElementById('joinForm-<%= post.postID %>').submit(); return false;">
+                                    <i class='bx bx-group'></i> Join
+                                </a>
+            
+                                <a href=""><i class='bx bxs-share'></i> Share</a>
+                            </div>
+                        </div>
                     <% }); %>
                 <% } else { %>
                     <p>⚠️ ไม่มีโพสต์</p>
                 <% } %>
             </div>
+            
+                
             
             
             

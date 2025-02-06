@@ -244,7 +244,24 @@
     width: 45px;
     margin: 8px;
 }
-
+.send-mess{
+    padding: 5px 10px;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+.send-mess:hover{
+    background-color: #b83039;
+    color: white;
+}
+.edit-pro{
+    padding: 5px 10px;
+    border: 1px solid black;
+    border-radius: 7px;
+}
+.edit-pro:hover{
+    background-color: #b83039;
+    color: white;
+}
 .user_post p {
     font-size: 15px;
 }

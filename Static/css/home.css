@@ -470,4 +470,10 @@
     flex-direction: row;
     align-items: center;
 }
+.icon a.interes:hover{
+    color: #b83039;  
+}
+.join-form {
+    display: none;
+}
 

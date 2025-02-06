@@ -199,19 +199,17 @@ router.post('/join',(req,res) => {
             res.redirect('/home')
         }
 
-        const create_chat = "INSERT INTO join_posts (ownerID,postID,userID) VALUES (?,?,?)"
-        pool.query(data_forinsert,[userid],(err,results) => {
+        const create_chat = "INSERT INTO chat_rooms (name,type) VALUES (?,?)"
+        const type = "group"
+        pool.query(create_chat,[ownerName,type],(err,results) => {
             if (err) {
-                console.log("Database error:", err);
-                return res.status(500).send("Database error");
-            }
-            if (results.length === 0) {
-                return res.status(404).json({ error: "User not found" });
+                console.error("Error create chat to database:", err);
+                res.redirect('/home')
             }
 
-            
+            res.redirect('/home')
         })
-        res.redirect('/home')
+        
     });
     
 });

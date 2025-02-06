@@ -167,7 +167,15 @@
                                     <% } else { %>
                                         <img style="width: 50px;" src="../IMG/Untitled.png">
                                     <% } %>
-                                    <p><a href="/profile/<%= post.ownerName %>"><%= post.ownerName %></a></p>
+                                    
+                                    <% if (username !== post.ownerName) { %>
+                                        <!-- กรณีที่ไม่ใช่เจ้าของโพสต์ -->
+                                        <p><a href="/profile/<%= post.ownerName %>"><%= post.ownerName %></a></p>
+                                    <% } else { %>
+                                        <!-- กรณีที่เป็นเจ้าของโพสต์ -->
+                                        <p><a href="/profile"><%= post.ownerName %></a></p>
+                                    <% } %>
+
                                 </div>
                                 <div>
                                     <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
@@ -192,6 +200,7 @@
                                 <form id="joinForm-<%= post.postID %>" action="/join" method="POST">
                                     <input type="hidden" name="postID" value="<%= post.postID %>">
                                     <input type="hidden" name="ownerID" value="<%= post.ownerID %>">
+                                    <input type="hidden" name="ownerName" value="<%= post.ownerName %>">
                                 </form>
                                 <a href="#" onclick="document.getElementById('joinForm-<%= post.postID %>').submit(); return false;">
                                     <i class='bx bx-group'></i> Join

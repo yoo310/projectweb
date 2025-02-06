@@ -34,7 +34,7 @@ const pool = mysql.createPool({
 const processImage = async (buffer) => {
     try {
         const resizedBuffer = await sharp(buffer)
-            .resize(800, 800) // ปรับขนาด
+            .resize(500) // ปรับขนาด
             .toFormat('jpeg', { quality: 80 }) // ลดคุณภาพ
             .toBuffer();
         return resizedBuffer;
@@ -190,7 +190,7 @@ router.post("/create_post", upload.single("image"), async (req, res) => {
 
 router.post('/join',(req,res) => {
     const userid = req.session.userid
-    const {postID,ownerID} = req.body;
+    const {postID,ownerID,ownerName} = req.body;
 
     const sql = "INSERT INTO join_posts (ownerID,postID,userID) VALUES (?,?,?)"
     pool.query(sql,[ownerID,postID,userid],(err,results) =>{
@@ -198,6 +198,19 @@ router.post('/join',(req,res) => {
             console.error("Error saving to database:", err);
             res.redirect('/home')
         }
+
+        const create_chat = "INSERT INTO join_posts (ownerID,postID,userID) VALUES (?,?,?)"
+        pool.query(data_forinsert,[userid],(err,results) => {
+            if (err) {
+                console.log("Database error:", err);
+                return res.status(500).send("Database error");
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            
+        })
         res.redirect('/home')
     });
     
@@ -207,7 +220,7 @@ router.post('/join',(req,res) => {
 router.get('/profile', (req, res) => {
     const username = req.session.username; 
     
-    console.log("Username in session:", username);
+    // console.log("Username in session:", username);
     if (!username) {
         return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
     }
@@ -235,11 +248,18 @@ router.get('/profile', (req, res) => {
 
         const userid = userData.id;
         // console.log(userid);
-        const mypost = "SELECT * FROM posts WHERE ownerID = ?"
+        const mypost = `
+        SELECT p.*, m.username, m.avatar, m.id
+        FROM posts AS p
+        JOIN member AS m ON p.ownerID = m.id
+        WHERE p.ownerID = ?
+        ORDER BY p.time DESC
+        `;
+        // const mypost = "SELECT * FROM posts WHERE ownerID = ?"
         pool.query(mypost, [userid], (err, results) => {
             if (err) {
                 console.log("❌ Database error:", err);
-                return res.redirect('/sing_in');
+                return res.render('sing_in');
             }
             const formattedResultsFromPosts = results.map(post => ({
                 ...post,
@@ -251,11 +271,13 @@ router.get('/profile', (req, res) => {
                     minute: '2-digit',
                     hour12: false,
                 }),
-                avatar: post.posterAvatar ? post.posterAvatar.toString('base64') : null,
+                ownerID: post.ownerID, 
+                ownerName: post.username, 
+                avatar: post.avatar ? post.avatar.toString('base64') : null,
                 img: post.img ? post.img.toString('base64') : null,
                
             }));
-            
+            // console.log("✅ Posts Data for Profile:", formattedResultsFromPosts);
             res.render("Myprofile", {userData, postAt_past: formattedResultsFromPosts });
         });
     }); 
@@ -263,7 +285,7 @@ router.get('/profile', (req, res) => {
 
 router.get("/profile/:username", (req, res) => {
     const memberName = req.params.username; // ✅ ตัดช่องว่างที่อาจเกิดขึ้น
-    console.log(memberName)
+    // console.log(memberName)
     //  memberName อย่างละเอียด
     if (!memberName) {
         return res.redirect('sing_in'); // ถ้ายังไม่ได้ login ให้กลับไปหน้า login
@@ -396,6 +418,8 @@ router.post('/profile_update',upload.single('avatar'), async (req,res) => {
 
     
 });
+
+
 
 
 

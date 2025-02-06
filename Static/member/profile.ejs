@@ -73,7 +73,12 @@
             <a href="home.html"><i class='bx bx-home' style='color:#fffcfc'></i></a>
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
             <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
-            <a href="#"><img style="width: 40px;" src="../IMG/Untitled.png"></a>
+            <% if (userData.avatar) { %>
+                <!-- <h3>Your Avatar</h3> -->
+                <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+            <% } else { %>
+                <img style="width: 150px;" src="../IMG/Untitled.png">
+            <% } %>
         </div>
     </div>
 
@@ -90,6 +95,9 @@
             <h1><%= username %></h1><br>
             <p>Garder: <%= userData.gender %>, age <%= userData.age %></p>
             <p>Interested sports: <%= userData.Interested %> </p><br>
+            <a href="/home">
+                <button type="button">Send message</button>
+            </a>
             <!-- <p>2 friends</p> -->
         </div>
     </div>

@@ -194,10 +194,10 @@
                                 <% } %>
                             </div>
                             <div class="icon">
-                                <a href=""><i class='bx bxs-heart'></i> Interested</a>
+                                <a class="interes" href=""><i class='bx bxs-heart'></i> Interested</a>
                                 <a href=""><i class='bx bxs-comment-detail'></i> Comment</a>
             
-                                <form id="joinForm-<%= post.postID %>" action="/join" method="POST">
+                                <form class="join-form" id="joinForm-<%= post.postID %>" action="/join" method="POST">
                                     <input type="hidden" name="postID" value="<%= post.postID %>">
                                     <input type="hidden" name="ownerID" value="<%= post.ownerID %>">
                                     <input type="hidden" name="ownerName" value="<%= post.ownerName %>">

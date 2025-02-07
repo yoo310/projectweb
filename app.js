@@ -19,14 +19,13 @@ io.on("connection", (socket) => {
     console.log("🔌 User connected:", socket.id);
 
     socket.on("sendMessage", async (data) => {
-        console.log("📩 Received message:", data);
         const { roomId, senderId, message } = data;
-        
-        // ตรวจสอบว่าค่าที่ส่งมาไม่เป็นค่าว่าง
+
         if (!roomId || !senderId || !message) {
             console.error("❌ Invalid message data:", data);
-            return; // หยุดทำงานถ้าข้อมูลไม่ครบ
+            return;
         }
+
         try {
             // ✅ บันทึกลงฐานข้อมูล
             await pool.execute(
@@ -34,10 +33,11 @@ io.on("connection", (socket) => {
                  VALUES (?, ?, ?, NOW())`,
                 [roomId, senderId, message]
             );
-            //ส่งข้อความกลับให้ทุกคน
+
+            // ✅ ส่งข้อความให้ทุกคนในห้อง
             io.emit("receiveMessage", data);
 
-        }catch (error) {
+        } catch (error) {
             console.error("❌ Error saving message:", error);
         }
     });
@@ -46,6 +46,8 @@ io.on("connection", (socket) => {
         console.log("🔌 User disconnected:", socket.id);
     });
 });
+
+
 
 
 app.set('views',`${__dirname}/Static/member`); // กำหนดตำแหน่งโฟลเดอร์ที่เก็บไฟล์ Views (template) เป็นโฟลเดอร์ static

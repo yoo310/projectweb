@@ -12,10 +12,10 @@
 
 <body>
     <div class="float-chat" id="chat-button">
-        <i class='bx bx-chat' style='color:#fffcfc'></i>
+        <a href="/showchat"><i class='bx bx-chat' style='color:#fffcfc'></i></a>
     </div>
 
-    <div id="chat-pop-up" class="chat-pop-up">
+    <!-- <div id="chat-pop-up" class="chat-pop-up">
         <div class="chat" onclick="ChatOpen()">
             <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
             <span>Friend 1</span>
@@ -32,7 +32,7 @@
             <a href="#"><img id="chat-profile" src="../IMG/Untitled.png" alt=""></a>
             <span>Friend 4</span>
         </div>
-    </div>
+    </div> -->
 
     <div id="float-chat-user" class="float-chat-user">
         <div class="top">
@@ -72,7 +72,7 @@
         <div class="right">
             <a href="/home"><i class='bx bx-home' style='color:#fffcfc'></i></a>
             <!-- <i class='bx bx-bell' style='color:#fffcfc'></i> -->
-            <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i>
+            <!-- <i id="chat" class='bx bx-chat' style='color:#fffcfc'></i> -->
             <% if (userData && userData.avatar) { %>
                 <img src="data:image/png;base64,<%= userData.avatar %>" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
             <% } else { %>

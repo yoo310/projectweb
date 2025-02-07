@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,15 +18,15 @@
 
         <div class="right">
             <h2>Sign up</h2>
-            <form action="/register/sing-up1" method="post">
+            <form action="/register/sing-up1" method="post" id="signup-form">
                 <label for="email">Email</label>
-                <input fype="email" name="email" id="email" placeholder="Enter Email" required>
+                <input type="email" name="email" id="email" placeholder="Enter Email" required>
 
                 <label for="username">User name</label>
-                <input fype="text" name="username" id="username" placeholder="User name" required>
+                <input type="text" name="username" id="username" placeholder="User name" required>
                 
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" placeholder="Password" required>
+                <input type="password" name="password" id="password" placeholder="Password : 8 or more characters" required>
                 
                 <div class="gg">
                 <button type="submit">Next</button>
@@ -36,6 +36,20 @@
 
         </div>
     </div>
+
+    <script>
+        document.getElementById("signup-form").addEventListener("submit", function(event) {
+            const password = document.getElementById("password").value;
+            const errorMsg = document.getElementById("password-error");
+
+            if (password.length < 8) {
+                event.preventDefault(); // ❌ หยุดการส่งฟอร์ม
+                errorMsg.style.display = "block"; // แสดงข้อความเตือน
+            } else {
+                errorMsg.style.display = "none"; // ซ่อนข้อความเตือน
+            }
+        });
+    </script>
 </body>
 
 </html>

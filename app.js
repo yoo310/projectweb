@@ -27,15 +27,26 @@ io.on("connection", (socket) => {
         }
 
         try {
-            // ✅ บันทึกลงฐานข้อมูล
+            // ✅ บันทึกข้อความลงฐานข้อมูล
             await pool.execute(
-                `INSERT INTO messages (room_id, sender_id, message, created_at) 
-                 VALUES (?, ?, ?, NOW())`,
+                `INSERT INTO messages (room_id, sender_id, message, created_at, is_read) 
+                 VALUES (?, ?, ?, NOW(), FALSE)`,
                 [roomId, senderId, message]
             );
 
+            // ✅ อัปเดตจำนวนข้อความที่ยังไม่ได้อ่านสำหรับผู้ใช้ทุกคนในห้อง (ยกเว้นผู้ส่ง)
+            await pool.execute(
+                `UPDATE room_participants 
+                 SET unread_messages = unread_messages + 1 
+                 WHERE room_id = ? AND user_id != ?`,
+                [roomId, senderId]
+            );
+
+            // ✅ แจ้งเตือนหน้าแสดงห้องแชท
+            io.emit("newMessageNotification", { roomId });
+
             // ✅ ส่งข้อความให้ทุกคนในห้อง
-            io.emit("receiveMessage", data);
+            io.to(roomId).emit("receiveMessage", data);
 
         } catch (error) {
             console.error("❌ Error saving message:", error);
@@ -46,6 +57,8 @@ io.on("connection", (socket) => {
         console.log("🔌 User disconnected:", socket.id);
     });
 });
+
+
 
 
 

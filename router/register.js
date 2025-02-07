@@ -26,7 +26,7 @@ const pool = mysql.createPool({
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: 3306,
+    port: process.env.DB_PORT
 });
 
 router.post('/sing-up1',(req,res) => {

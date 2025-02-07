@@ -124,9 +124,14 @@
                                 <% } %>
                                 <p> <%= post.ownerName %></p>
                             </div>
-                            <div>
-                                <a href="#"><i class='bx bx-dots-vertical-rounded'></i></a>
-                            </div>
+
+                            <form class="del_post" id="del_post-<%= post.postID %>" action="/del_post" method="POST">
+                                <input type="hidden" name="postID" value="<%= post.postID %>">
+                            </form>
+                            <a href="#" onclick="document.getElementById('del_post-<%= post.postID %>').submit(); return false;">
+                                <i class='bx bx-x'></i>
+                            </a>
+
                         </div>
                         <div class="title">
                             <p><%= post.capion %></p>

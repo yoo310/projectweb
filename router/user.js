@@ -64,7 +64,7 @@ router.post('/verify',(req,res) => {
         req.session.userid = user.id 
         console.log(req.session.username)
         // res.render('home', { username });
-        res.redirect('home');
+        res.redirect('/home');
         
     });
 
@@ -179,6 +179,25 @@ router.post("/create_post", upload.single("image"), async (req, res) => {
         res.redirect('/home')
         // return res.status(500).send("Image processing error");
     }
+});
+
+router.post('/del_post',(req,res) => {
+    const {postID} = req.body;
+    console.log(postID)
+    if (!postID) {
+        res.redirect('/profile')
+    }
+
+    const sql = "DELETE FROM posts WHERE postID = ? "
+
+    pool.query(sql,[postID],(err,results) => {
+        if (err){
+            console.error("Error deleting post:", err);
+            res.redirect('/profile')
+        }
+        console.log("Delete Results:", results);
+        res.redirect('/profile')
+    })
 });
 
 router.post('/join',(req,res) => {

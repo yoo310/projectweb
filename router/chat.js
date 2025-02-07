@@ -61,7 +61,7 @@ router.post('/create_chat',(req,res) => {
         if (results.length > 0) {
             // ห้องแชทมีอยู่แล้ว ใช้ห้องเดิม
             const existingRoomId = results[0].id;
-            return res.redirect(`/chat/${existingRoomId}`);
+            return res.redirect(`/chat/room/${existingRoomId}/${receiverID}`);
         }
 
         // ถ้ายังไม่มีห้องแชท, สร้างใหม่

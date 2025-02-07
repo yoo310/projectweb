@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="/css/chatroom.css">
+    <script src="/socket.io/socket.io.js"></script> <!-- เพิ่ม WebSocket -->
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat with <%= receiver.receiver_name %></h1>
+
+        <div class="receiver-info">
+            <% if (receiver.receiver_avatar) { %>
+                <img src="data:image/png;base64,<%= receiver.receiver_avatar.toString('base64') %>" 
+                    alt="Receiver Avatar" class="avatar">
+            <% } else { %>
+                <img src="/IMG/default-avatar.png" alt="Default Avatar" class="avatar">
+            <% } %>
+            <div class="receiver-details">
+                <h3><%= receiver.receiver_name %></h3>
+                <!-- <p>Email: <%= receiver.receiver_email %></p> -->
+            </div>
+        </div>
+
+        <!-- แสดงข้อความแชท -->
+        <div class="chat-box" id="chat-box">
+            <% if (messages.length > 0) { %>
+                <% messages.forEach(msg => { %>
+                    <div class="message <%= msg.sender_id === userId ? 'sent' : 'received' %>">
+                        <strong><%= msg.sender_id === userId ? 'You' : receiver.receiver_name %>:</strong>
+                        <p><%= msg.message %></p>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No messages yet.</p>
+            <% } %>
+        </div>
+        
+        <!-- Input Box -->
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script> <!-- ✅ โหลด WebSocket -->
+    <script>
+        const socket = io(); // ✅ สร้างการเชื่อมต่อ WebSocket
+
+        socket.on("connect", () => {
+            console.log("✅ WebSocket Connected:", socket.id);
+        });
+
+        socket.on("disconnect", () => {
+            console.log("❌ WebSocket Disconnected!");
+        });
+
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            if (!message) return;
+
+            const data = {
+                roomId: "<%= roomId %>",
+                senderId: "<%= userId %>",
+                message: message
+            };
+
+            console.log("📩 Sending message:", data);
+            socket.emit("sendMessage", data);
+            document.getElementById("messageInput").value = "";
+        }
+
+        socket.on("receiveMessage", (data) => {
+            console.log("📩 Received message:", data);
+            const chatBox = document.getElementById("chat-box");
+            const newMessage = document.createElement("div");
+            newMessage.classList.add("message", data.senderId === "<%= userId %>" ? "sent" : "received");
+            newMessage.innerHTML = `<strong>${data.senderId === "<%= userId %>" ? "You" : "<%= receiver.receiver_name %>"}:</strong>
+                                    <p>${data.message}</p>`;
+            chatBox.appendChild(newMessage);
+        });
+    </script>
+
+    
+</body>
+</html>

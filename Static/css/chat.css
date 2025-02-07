@@ -63,7 +63,7 @@ body {
 
 /* ======= Join Chat Button ======= */
 .join-btn {
-    background: #007bff;
+    background: #DC303B;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -73,7 +73,7 @@ body {
 }
 
 .join-btn:hover {
-    background: #0056b3;
+    background: #DC303B;
 }
 
 /* ======= Responsive Design ======= */

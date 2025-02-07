@@ -87,7 +87,18 @@ router.post('/create_chat',(req,res) => {
                         console.error("Error adding user2:", err);
                         return res.redirect('/home');
                     }
-                    res.redirect('/home')
+
+                    // ✅ เพิ่มข้อความต้อนรับเข้าไปใน `messages`
+                    const welcomeMessage = "Welcome to the chat!";
+                    const insert_message = `
+                        INSERT INTO messages (room_id, sender_id, message, created_at) 
+                        VALUES (?, ?, ?, NOW())`;
+                    pool.query(insert_message, [roomID, senderID, welcomeMessage], (err) => {
+                        if (err) {
+                            console.error("Error adding welcome message:", err);
+                        }
+                        res.redirect(`/chat/room/${roomID}/${receiverID}`);
+                    });
                 });
             });
         });
@@ -96,85 +107,115 @@ router.post('/create_chat',(req,res) => {
 
 
 router.get("/showchat", (req, res) => {
-    const userId = req.session.userid; // ใช้ session เพื่อดึง userId
-    console.log("This is showchat", userId)
+    const userId = req.session.userid; // ดึง userId จาก session
+    // console.log("This is showchat", userId);
+
     if (!userId) {
         return res.redirect("/sign_in"); // ถ้ายังไม่ได้ล็อกอินให้ไปหน้า sign in
     }
 
     const sql = `
         SELECT cr.id AS room_id, cr.name AS room_name, cr.type, 
-               m.id AS user_id, m.username, m.email, m.avatar 
+               sender.id AS sender_id, sender.username AS sender_name, sender.email AS sender_email, sender.avatar AS sender_avatar,
+               receiver.id AS receiver_id, receiver.username AS receiver_name, receiver.email AS receiver_email, receiver.avatar AS receiver_avatar
         FROM room_participants AS rp
         JOIN chat_rooms AS cr ON rp.room_id = cr.id
-        JOIN member AS m ON rp.user_id = m.id
-        WHERE m.id = ?
+        JOIN member AS sender ON rp.user_id = sender.id
+        JOIN room_participants AS rp2 ON rp.room_id = rp2.room_id
+        JOIN member AS receiver ON rp2.user_id = receiver.id
+        WHERE rp.user_id = ? AND rp2.user_id != ?;
     `;
 
-    pool.query(sql, [userId], (err, results) => {
+    pool.query(sql, [userId, userId], (err, results) => {
         if (err) {
             console.error("❌ Error fetching chat data:", err);
             return res.status(500).send("Error fetching chat data");
         }
 
-        console.log("✅ Chat Rooms Data:", results); // เช็คว่ามีข้อมูลออกมาไหม
-        res.render("viewchat", { chatRooms: results }); // ส่งข้อมูลไปหน้า EJS
+        // console.log("✅ Chat Rooms Data (With Receiver Info):", results); 
+
+        res.render("viewchat", { chatRooms: results, userId }); // ส่งข้อมูลไปหน้า EJS
     });
 });
 
-
-
-router.get('/room/:room_id', (req, res) => {
-    const roomId = req.params.room_id;
+// มาทำอันนี้ต่อ
+router.get("/room/:roomId/:receiverId", async (req, res) => {
+    const { roomId, receiverId } = req.params;
     const userId = req.session.userid;
 
-    if (!userId) {
-        return res.redirect('/sign_up');
-    }
+    // console.log("roomId,receiverId,userId",roomId,receiverId,userId)
 
-    // ดึงข้อมูลห้องแชท
-    const roomQuery = `SELECT * FROM chat_rooms WHERE id = ?`;
+    try {
+        // console.log("⚡ Running SQL Query...");
+        // ✅ ดึงข้อมูลของผู้รับ
+        const [receiverResults] = await pool.promise().query(
+            `SELECT id AS receiver_id, username AS receiver_name, email AS receiver_email, avatar AS receiver_avatar 
+             FROM member WHERE id = ?`, 
+            [receiverId]
+        );
+        // console.log("🟢 Query executed successfully!");
 
-    // ดึงรายชื่อสมาชิกในห้อง
-    const participantsQuery = `
-        SELECT m.id, m.username, m.avatar 
-        FROM room_participants rp 
-        JOIN member m ON rp.user_id = m.id 
-        WHERE rp.room_id = ?`;
-
-    // ดึงข้อความแชท
-    const messagesQuery = `
-        SELECT m.username, c.message, c.sender_id 
-        FROM chat_messages c
-        JOIN member m ON c.sender_id = m.id
-        WHERE c.room_id = ?
-        ORDER BY c.timestamp ASC`;
-
-    pool.query(roomQuery, [roomId], (err, roomResults) => {
-        if (err || roomResults.length === 0) {
-            return res.status(404).send('Chat room not found');
+        if (!Array.isArray(receiverResults) || receiverResults.length === 0) {
+            return res.status(404).send("Receiver not found");
         }
 
-        pool.query(participantsQuery, [roomId], (err, participantsResults) => {
-            if (err) {
-                return res.status(500).send('Error fetching participants');
-            }
+        const receiverData = receiverResults[0];
+        console.log("receiverData",receiverData)
+        // ✅ ดึงข้อความของห้องแชท
+        const [messageResults] = await pool.promise().query(
+            `SELECT sender_id, message, created_at AS created_at 
+             FROM messages 
+             WHERE room_id = ? 
+             ORDER BY created_at  ASC;`,
+            [roomId]
+        );
 
-            pool.query(messagesQuery, [roomId], (err, messagesResults) => {
-                if (err) {
-                    return res.status(500).send('Error fetching messages');
-                }
-
-                res.render('chat', {
-                    room: roomResults[0],
-                    participants: participantsResults,
-                    messages: messagesResults,
-                    userId
-                });
-            });
+        console.log("✅ Messages Data:", messageResults);
+        
+        const messages = Array.isArray(messageResults) ? messageResults : [];
+        
+        res.render("chatroom", {
+            roomId,
+            receiver: receiverData,
+            userId,
+            messages // ป้องกัน `undefined`
         });
-    });
+        
+    } catch (err) {
+        console.error("❌ Error fetching chat data:", err);
+        res.status(500).send("Error fetching chat data");
+    }
 });
+
+
+
+router.post("/send_message", async (req, res) => {
+    const { roomId, receiverId, message } = req.body;
+    const senderId = req.session.userId; // ดึง sender ID จาก session
+
+    if (!senderId || !roomId || !receiverId || !message) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        // ✅ บันทึกข้อความลงฐานข้อมูล
+        const sql = `INSERT INTO messages (room_id, sender_id, receiver_id, message, created_at) 
+                     VALUES (?, ?, ?, ?, NOW())`;
+        await pool.execute(sql, [roomId, senderId, receiverId, message]);
+
+        console.log(`✅ Message saved: Room ${roomId}, Sender ${senderId}, Receiver ${receiverId}`);
+        
+        res.status(200).json({ success: true, message: "Message sent successfully" });
+    } catch (err) {
+        console.error("❌ Error saving message:", err);
+        res.status(500).json({ error: "Failed to send message" });
+    }
+});
+
+
+
+
+
 
 
 

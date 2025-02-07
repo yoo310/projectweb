@@ -15,18 +15,20 @@
                 <% chatRooms.forEach(room => { %>
                     <div class="chat-room">
                         <div class="chat-info">
-                            <% if (room.avatar) { %>
-                                <img src="data:image/png;base64,<%= room.avatar.toString('base64') %>" 
-                                    alt="User Avatar" class="avatar">
+                            <% if (room.receiver_avatar) { %>
+                                <img src="data:image/png;base64,<%= room.receiver_avatar.toString('base64') %>" 
+                                    alt="Receiver Avatar" class="avatar">
                             <% } else { %>
                                 <img src="/IMG/default-avatar.png" alt="Default Avatar" class="avatar">
                             <% } %>
                             <div class="room-details">
-                                <h3><%= room.room_name %> (<%= room.type %>)</h3>
-                                <p>Member: <%= room.username %></p>
+                                <h3>Chat with <%= room.receiver_name %></h3>
                             </div>
                         </div>
-                        <button class="join-btn" onclick="goToChat('<%= room.room_id %>')">Enter Chat</button>
+                        <form action="/room/<%= room.room_id %>/<%= room.receiver_id %>" method="get">
+                            <button type="submit" onclick="goToChat('<%= room.room_id %>', '<%= room.receiver_id %>')">Enter Chat</button>
+                        </form>
+                        
                     </div>
                 <% }) %>
             </div>

@@ -9,7 +9,6 @@
 <body>
     <div class="chat-container">
         <h1>Available Chat Rooms</h1>
-
         <% if (chatRooms && chatRooms.length > 0) { %>
             <div class="chat-list">
                 <% chatRooms.forEach(room => { %>
@@ -22,7 +21,7 @@
                                 <img src="/IMG/default-avatar.png" alt="Default Avatar" class="avatar">
                             <% } %>
                             <div class="room-details">
-                                <h3>Chat with <%= room.receiver_name %></h3>
+                                <h3><%= room.receiver_name %></h3>
                             </div>
                         </div>
                         <form action="/room/<%= room.room_id %>/<%= room.receiver_id %>" method="get">
@@ -37,10 +36,19 @@
         <% } %>
     </div>
 
-    <!-- <script>
-        function goToChat(roomId) {
-            window.location.href = "/chat/room/" + roomId;
+    <script>
+        // 📌 เมื่อโหลดหน้าเว็บ ให้เลื่อนไปที่แชทล่าสุด
+        function scrollToBottom() {
+            const chatList = document.getElementById("chat-list");
+            chatList.scrollTop = chatList.scrollHeight;
         }
-    </script> -->
+    
+        // ✅ เรียกใช้เมื่อโหลดหน้าเว็บเสร็จ
+        window.onload = () => {
+            scrollToBottom();
+        };
+    </script>
+    
+
 </body>
 </html>

@@ -1,90 +1,75 @@
-/* ======= Global Styles ======= */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-/* ======= Chat Container ======= */
 .chat-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 100%;
     max-width: 600px;
-    text-align: center;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* ======= Chat Room List ======= */
 .chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    max-height: 400px; /* กำหนดความสูง */
+    overflow-y: auto; /* ทำให้สามารถเลื่อนขึ้นลงได้ */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #ffffff;
 }
 
-/* ======= Chat Room Item ======= */
+/* ปรับแต่ง Scrollbar สำหรับ Chrome และ Edge */
+.chat-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 5px;
+}
+
+.chat-list::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
 .chat-room {
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #ddd;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    border-radius: 10px;
 }
 
-/* ======= Chat Info (Avatar + Details) ======= */
 .chat-info {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
-/* ======= Avatar ======= */
 .avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    object-fit: cover;
+    margin-right: 10px;
 }
 
-/* ======= Room Details ======= */
-.room-details {
-    text-align: left;
+.room-details h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-/* ======= Join Chat Button ======= */
-.join-btn {
-    background: #DC303B;
-    color: white;
+button {
+    padding: 8px 12px;
     border: none;
-    padding: 10px 15px;
     border-radius: 5px;
+    background-color: #DC303B;
+    color: white;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.join-btn:hover {
-    background: #DC303B;
-}
-
-/* ======= Responsive Design ======= */
-@media (max-width: 600px) {
-    .chat-room {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .join-btn {
-        width: 100%;
-        margin-top: 10px;
-    }
+button:hover {
+    background-color: #DC303B;
 }

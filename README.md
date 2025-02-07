@@ -5,7 +5,6 @@
 
 # 🚀 Web Project Setup Guide
 ## 📌 ขั้นตอนการติดตั้งโปรเจค (Localhost)
-### **1️⃣ สร้างฐานข้อมูล**
 1.สร้างฐานข้อมูล **`web_project`** ใน MySQL ด้วยคำสั่ง:
 ```sql
 CREATE DATABASE web_project;
